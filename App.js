@@ -3,9 +3,10 @@ import { StyleSheet, Text, View, Modal, Button } from 'react-native';
 import { registerRootComponent } from 'expo';
 import { Dimensions } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native-web';
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import GestureRecognizer from 'react-native-swipe-gestures';
 import Player from './Components/Player';
+import Btn from './Components/Btn';
 import { COLORS } from './Values/Colors';
 
 const generateID = () => {
@@ -16,14 +17,36 @@ const generateID = () => {
 function MainScreen() {
   const [playersID, setPlayersID] = useState({players:[{id:generateID()},{id:generateID()},{id:generateID()}, {id:generateID()}]})
   const [showBar, setShowBar] = useState(false)
-  const [players, setPlayers] = useState(playersID.players.map((player) => <Player key={player.id} health={40}/>))
-  
+  const [playerHealth, setPlayerHealth] = useState(20)
+  const [players, setPlayers] = useState(playersID.players.map((player) => <Player key={player.id} health={playerHealth}/>))
+
   const updatePlayers = () => {
-    setPlayers(playersID.players.map((player) => <Player key={player.id} health={40}/>))
+    setPlayers(playersID.players.map((player) => <Player key={player.id} health={playerHealth} />))
+  }
+
+  useEffect(() => {
+    updatePlayers()
+  },[playersID])
+
+  const clearPlayerIDs = () => {
+    const tmpPlayers = {players:[]}
+    for(let i = 0 ; i < playersID.players.length ; i++) {
+      tmpPlayers.players.push({id: generateID()})
+    }
+    setPlayersID(tmpPlayers)
+  }
+
+  const updatePlayerHealth = () => {
+    if (playerHealth + 10 > 40) {
+      setPlayerHealth(20)
+    } else {
+      setPlayerHealth(playerHealth + 10)
+    }
+    clearPlayerIDs()
   }
 
   const addPlayer = () => {
-    if(playersID.players.length < 4) {
+    if(playersID.players.length < 6) {
       const tmpPlayers = {...playersID}
       tmpPlayers.players.push({id: generateID()})
       setPlayersID(tmpPlayers)
@@ -44,25 +67,23 @@ function MainScreen() {
   return (
     <GestureRecognizer 
     style={styles.players} 
-    onSwipeLeft={(state) => {
+    onSwipeLeft={() => {
       setShowBar(true)
-      console.log("i am open")
     }}
-    onSwipeRight={(e) => {
+    onSwipeRight={() => {
       if(showBar){
-        console.log("close sw")
         setShowBar(false)}
     }}
     >
-    <TouchableWithoutFeedback onPress={() =>{
+    <TouchableWithoutFeedback 
+    onPress={() =>{
       if(showBar) {
         setShowBar(false)
-        console.log("cloes")
       }
     }}>
       <View style={styles.players}>
       <Modal
-        animationType="slide"
+        animationType='fade'
         transparent={true}
         visible={showBar}
         onRequestClose={() => {
@@ -72,14 +93,32 @@ function MainScreen() {
       >
         <View style={styles.centeredView} >
           <View style={styles.modalView}>
-              <Button 
-              color={COLORS.btnAdd}
-              onPress={() => addPlayer()} 
-              title="Add player" />
-              <Button 
-              color={COLORS.btnRemove}
-              onPress={() => removePlayer()} 
-              title="Remove player"/>
+              <View style={styles.addBtns}>
+                <View style={styles.btn}>
+                  <Btn 
+                  color={COLORS.btnAdd}
+                  onPress={() => addPlayer()} 
+                  title="Add player" />
+                </View>
+                <View>
+                <Btn 
+                color={COLORS.btnRemove}
+                onPress={() => removePlayer()} 
+                title="Remove player"/>
+                </View>
+              </View>
+              <View>
+                <Text>
+                  Life total
+                </Text>
+                <View>
+                </View>
+                <Btn 
+                onPress={() => updatePlayerHealth()}
+                title={playerHealth}
+                color={COLORS.red}
+                ></Btn>
+              </View>
           </View>
         </View>
       </Modal>
@@ -115,13 +154,21 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5
+    elevation: 5,
+    flexDirection:'row',
+    justifyContent:'center'
   },
   centeredView: {
     flex: 1,
     transform: [{ rotate:'90deg'} ,{translateY:Dimensions.get('window').width/2}]
-
   },
+  btn: {
+    marginBottom:12,
+  },
+  addBtns: {
+    flexDirection:'column',
+    marginRight:12,
+  }
 });
 
 registerRootComponent(App)

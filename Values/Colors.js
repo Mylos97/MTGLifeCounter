@@ -6,5 +6,6 @@ export const COLORS = {
     blue: 'rgb(169,224,249)',
     btnAdd: '#aaf683',
     btnRemove: '#ee6055',
+    btnSecondary: '#EAF4F4',
     fontColor: '#7f8080',
 }
