@@ -14,41 +14,166 @@ const generateID = () => {
   return r
 }
 
+const PlayerScreen = (props) => {
+
+  if(props.length < 4) {
+    return (
+      <View style={styles.players}>
+        {props.players}
+      </View>
+    )
+  }
+
+  if (props.length === 4) {
+    return (
+      <View style={styles.container}>
+          <View style={styles.row6}>
+            {props.players[0]}
+            {props.players[1]}
+          </View>
+          <View style={styles.row6}>
+            {props.players[2]}
+            {props.players[3]}
+          </View>
+    </View>
+    )
+  }
+
+
+  if (props.length === 5) {
+    return (
+      <View style={styles.container}>
+        <View style={{flexDirection:'row', flex:2}}>
+          {props.players[0]}
+          {props.players[1]}
+        </View>
+        <View styles={{flexDirection:'column', flex:2}}>
+          {props.players[4]}
+        </View>
+        <View style={{flexDirection:'row', flex:2}}>
+        {props.players[2]}
+        {props.players[3]}
+        </View>
+    </View>
+    )
+  }
+
+  if (props.length === 6) {
+    return (
+      <View style={styles.container}>
+          <View style={{flexDirection:'row', flex:2}}>
+            {props.players[0]}
+            {props.players[1]}
+          </View>
+          <View style={{flexDirection:'row',  flex:2}}>
+            {props.players[2]}
+            {props.players[3]}
+          </View>
+          <View style={{flexDirection:'row', flex:2}}>
+            {props.players[4]}
+            {props.players[5]}
+          </View>
+    </View>
+    )
+  }
+
+
+}
+
+
 function MainScreen() {
-  const [playersID, setPlayersID] = useState({players:[{id:generateID()},{id:generateID()},{id:generateID()}, {id:generateID()}]})
+  const fontSizes = {2:112,3:32,4:28,5:24,6:22}
+  const [playersID, setPlayersID] = useState({players:
+    [{id:generateID(), rotation:"180deg", health:20, fontsize:fontSizes[2]},
+    {id:generateID(), rotation:"0deg", health:20, fontsize:fontSizes[2]}]})
   const [showBar, setShowBar] = useState(false)
   const [playerHealth, setPlayerHealth] = useState(20)
-  const [players, setPlayers] = useState(playersID.players.map((player) => <Player key={player.id} health={playerHealth}/>))
+  const [players, setPlayers] = useState(playersID.players.map((player) => 
+  <Player key={player.id} health={playerHealth} rotation={player.rotation} fontsize={player.fontsize}/>))
 
   const updatePlayers = () => {
-    setPlayers(playersID.players.map((player) => <Player key={player.id} health={playerHealth} />))
+    setPlayers(playersID.players.map((player, i) => (
+    <Player key={player.id} health={player.health} rotation={player.rotation} index={i} fontsize={fontSizes[players.length]}/>)))
   }
 
   useEffect(() => {
     updatePlayers()
-  },[playersID])
-
-  const clearPlayerIDs = () => {
-    const tmpPlayers = {players:[]}
-    for(let i = 0 ; i < playersID.players.length ; i++) {
-      tmpPlayers.players.push({id: generateID()})
-    }
-    setPlayersID(tmpPlayers)
-  }
+  }, [playersID])
 
   const updatePlayerHealth = () => {
+    const tmpPlayers = {...playersID}
     if (playerHealth + 10 > 40) {
       setPlayerHealth(20)
+      tmpPlayers.players.map((p) => {
+        p.health = 20
+        return p
+      })
     } else {
       setPlayerHealth(playerHealth + 10)
-    }
-    clearPlayerIDs()
+      tmpPlayers.players.map((p) => {
+        p.health = playerHealth + 10
+        return p
+      })
+    } 
+    setPlayersID(tmpPlayers)
+    updatePlayers()
   }
 
   const addPlayer = () => {
     if(playersID.players.length < 6) {
       const tmpPlayers = {...playersID}
-      tmpPlayers.players.push({id: generateID()})
+      tmpPlayers.players.push({id: generateID(), health:playerHealth})
+      if(tmpPlayers.players.length <= 3) {
+        tmpPlayers.players.map((player,i) => {
+          if (i == 1) {
+            player.rotation = "180deg"
+          } else {
+            
+            player.rotation = "0deg"
+          }
+          return player
+        })
+      }
+      if(tmpPlayers.players.length == 4) {
+        tmpPlayers.players.map((player,i) => {
+          if (i == 1 || i == 0) {
+            player.rotation = "180deg"
+          } else {
+            player.rotation = "0deg"
+          }
+          return player
+        })
+      }
+      if(tmpPlayers.players.length == 5) {
+        tmpPlayers.players.map((player,i) => {
+          if (i == 0 || i == 1) {
+            player.rotation = "180deg"
+          } 
+          else if (i == 2 || i == 3) {
+            player.rotation = "0deg"
+          } else {
+            player.rotation = "0deg"
+          }
+          return player
+        })
+      }
+      if(tmpPlayers.players.length == 6) {
+        tmpPlayers.players.map((player,i) => {
+          if (i == 0 || i == 1) {
+            player.rotation = "180deg"
+          } 
+          else if (i == 2 ) {
+            player.rotation = "90deg"
+            
+          } else if (i == 3) {
+            player.rotation = "270deg"
+          } else {
+            player.rotation = "0deg"
+          }
+          return player
+        })
+      }
+
       setPlayersID(tmpPlayers)
       updatePlayers()
     } 
@@ -58,6 +183,39 @@ function MainScreen() {
     if(playersID.players.length > 2) {
       const tmpPlayers = {...playersID}
       tmpPlayers.players.pop(tmpPlayers.players.length - 1)
+      if(tmpPlayers.players.length <= 3) {
+        tmpPlayers.players.map((player,i) => {
+          if (i == 1) {
+            player.rotation = "180deg"
+          } else {
+            player.rotation = "0deg"
+          }
+          return player
+        })
+      }
+      if(tmpPlayers.players.length == 4) {
+        tmpPlayers.players.map((player,i) => {
+          if (i == 1 || i == 0) {
+            player.rotation = "180deg"
+          } else {
+            player.rotation = "0deg"
+          }
+          return player
+        })
+      }
+      if(tmpPlayers.players.length == 5) {
+        tmpPlayers.players.map((player,i) => {
+          if (i == 0 || i == 1) {
+            player.rotation = "180deg"
+          } 
+          else if (i == 2 || i == 3) {
+            player.rotation = "0deg"
+          } else {
+            player.rotation = "0deg"
+          }
+          return player
+        })
+      }
       setPlayersID(tmpPlayers)
       updatePlayers()
     } 
@@ -122,12 +280,11 @@ function MainScreen() {
           </View>
         </View>
       </Modal>
-        {players}
+        <PlayerScreen players= {players} length={playersID.players.length}/>
         <StatusBar style="auto" />
       </View>
     </TouchableWithoutFeedback>
     </GestureRecognizer>
-
   )
 }
 
@@ -140,9 +297,22 @@ export default function App() {
 const styles = StyleSheet.create({
   players: {
     flex: 1,
+    overflow:'hidden',
+  },
+  container: {
+    flex:1,
+  },
+  row : {
+    flex:2,
+    flexDirection: 'row', 
+  },
+  row6: {
+    flex:1,
+    flexDirection: 'row',
   },
   modalView: {
     margin: 20,
+    marginTop: 70,
     backgroundColor: "white",
     borderRadius: 20,
     padding: 35,
@@ -160,7 +330,7 @@ const styles = StyleSheet.create({
   },
   centeredView: {
     flex: 1,
-    transform: [{ rotate:'90deg'} ,{translateY:Dimensions.get('window').width/2}]
+    //transform: [{ rotate:'90deg'} ,{translateY:Dimensions.get('window').width/2}]
   },
   btn: {
     marginBottom:12,

@@ -1,5 +1,8 @@
 import react,{ useState} from "react"
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
+
 const Btn = (props) => {
     return (
         <Pressable 
@@ -7,7 +10,7 @@ const Btn = (props) => {
                 props.onPress()
                 }}
             >
-            <View style={[styles.btn, {backgroundColor:props.color} ]}>
+            <View style={[styles.btn, {backgroundColor:props.color}, props.style]}>
                 <Text>
                 {props.title}
                 </Text>
@@ -18,7 +21,6 @@ const Btn = (props) => {
 
 const styles = StyleSheet.create({
     btn:{
-        flex:1,
         alignItems:'center',
         margin:4,
         padding:8,

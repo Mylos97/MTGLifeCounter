@@ -10,12 +10,15 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.1.1",
+    "@fortawesome/react-fontawesome": "^0.1.18",
     "@react-navigation/drawer": "^6.3.1",
     "expo": "~44.0.0",
     "expo-status-bar": "~1.2.0",
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "react-native": "0.64.3",
+    "react-native-auto-size-text": "^1.1.1",
     "react-native-gesture-handler": "~2.1.0",
     "react-native-reanimated": "^2.4.1",
     "react-native-safe-area-context": "3.3.2",
