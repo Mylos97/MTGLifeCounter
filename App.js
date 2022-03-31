@@ -42,17 +42,17 @@ const PlayerScreen = (props) => {
 
   if (props.length === 5) {
     return (
-      <View style={styles.container}>
-        <View style={{flexDirection:'row', flex:2}}>
+      <View style={{flex:1 , flexDirection:'column'}}>
+        <View style={{flex:6, backgroundColor:'red', flexDirection:'row'}}>
           {props.players[0]}
           {props.players[1]}
         </View>
-        <View styles={{flexDirection:'column', flex:2}}>
+        <View style={{backgroundColor:'green', flex:4}}>
           {props.players[4]}
         </View>
-        <View style={{flexDirection:'row', flex:2}}>
-        {props.players[2]}
-        {props.players[3]}
+        <View style={{flex:6, backgroundColor:'blue', flexDirection:'row'}}>
+          {props.players[2]}
+          {props.players[3]}
         </View>
     </View>
     )
@@ -61,15 +61,15 @@ const PlayerScreen = (props) => {
   if (props.length === 6) {
     return (
       <View style={styles.container}>
-          <View style={{flexDirection:'row', flex:2}}>
+          <View style={{flexDirection:'row', flex:1}}>
             {props.players[0]}
             {props.players[1]}
           </View>
-          <View style={{flexDirection:'row',  flex:2}}>
+          <View style={{flexDirection:'row',  flex:1}}>
             {props.players[2]}
             {props.players[3]}
           </View>
-          <View style={{flexDirection:'row', flex:2}}>
+          <View style={{flexDirection:'row', flex:1}}>
             {props.players[4]}
             {props.players[5]}
           </View>
@@ -82,10 +82,10 @@ const PlayerScreen = (props) => {
 
 
 function MainScreen() {
-  const fontSizes = {2:112,3:32,4:28,5:24,6:22}
+  const fontSizes = {2:100,3:90,4:60,5:50,6:40}
   const [playersID, setPlayersID] = useState({players:
     [{id:generateID(), rotation:"180deg", health:20, fontsize:fontSizes[2]},
-    {id:generateID(), rotation:"0deg", health:20, fontsize:fontSizes[2]}]})
+    {id:generateID(), rotation:"0deg", health:20, fontsize:fontSizes[2]},] })
   const [showBar, setShowBar] = useState(false)
   const [playerHealth, setPlayerHealth] = useState(20)
   const [players, setPlayers] = useState(playersID.players.map((player) => 
@@ -149,9 +149,9 @@ function MainScreen() {
           if (i == 0 || i == 1) {
             player.rotation = "180deg"
           } 
-          else if (i == 2 || i == 3) {
+          else if (i == 4 ) {
             player.rotation = "0deg"
-          } else {
+          } else if (i == 2 || i == 3) {
             player.rotation = "0deg"
           }
           return player
@@ -183,16 +183,27 @@ function MainScreen() {
     if(playersID.players.length > 2) {
       const tmpPlayers = {...playersID}
       tmpPlayers.players.pop(tmpPlayers.players.length - 1)
-      if(tmpPlayers.players.length <= 3) {
+      if(tmpPlayers.players.length == 2) {
         tmpPlayers.players.map((player,i) => {
           if (i == 1) {
-            player.rotation = "180deg"
-          } else {
             player.rotation = "0deg"
+          } else {
+            player.rotation = "180deg"
           }
           return player
         })
       }
+      if(tmpPlayers.players.length == 3) {
+        tmpPlayers.players.map((player,i) => {
+          if (i == 1 || i == 2) {
+            player.rotation = "0deg"
+          } else {
+            player.rotation = "180deg"
+          }
+          return player
+        })
+      }
+
       if(tmpPlayers.players.length == 4) {
         tmpPlayers.players.map((player,i) => {
           if (i == 1 || i == 0) {
@@ -298,6 +309,8 @@ const styles = StyleSheet.create({
   players: {
     flex: 1,
     overflow:'hidden',
+    borderColor:'#fff',
+    backgroundColor:'grey',
   },
   container: {
     flex:1,

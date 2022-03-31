@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Button, Text, View } from "react-native";
+import { StyleSheet, Button, Text, View, TouchableOpacity } from "react-native";
 import Btn from './Btn';
 import { COLORS } from '../Values/Colors';
 
@@ -14,17 +14,54 @@ const Player = (props) => {
     const [widthHeight , setWidthHeight] = useState(null)
     const [rotate, setRotate] = useState(props.rotation)
     const [rotateIndex, setRotationIndex] = useState(rotations.indexOf(props.rotation) + 1)
-    const onLayout = (e) => {
-        const layout = e.nativeEvent.layout
-        setWidthHeight([layout.width,layout.height])
-    }
-    console.log(fontsize)
+
     useEffect(() => {
-        //console.log("i update " + props.index + " " + props.rotation + rotations.indexOf(props.rotation))
+        setFontsize(props.fontsize)
         setLife(props.health)
         setRotationIndex(rotations.indexOf(props.rotation) + 1)
-    }, [props.rotation, props.health])
+    }, [props.rotation, props.health, props.fontsize])
 
+
+    return (
+        <View style={{flex:1, flexDirection:'row' }  }>
+            <TouchableOpacity 
+            onPress={() => setLife(life-1)}
+            style={{flex:1 , backgroundColor:'red' ,  justifyContent: 'center'}}>
+            <View>
+            <Text style={{textAlign:'center'}}>
+                -
+            </Text>
+            </View>
+            </TouchableOpacity>
+            <View style={{flex:6 , backgroundColor:'green', alignItems:'center', justifyContent:'center' }}>
+                <View style={{transform: [{rotate: rotate ? rotate : "0deg"}], textAlign:'center'}}>
+                <Text style={[styles.text, {fontSize:fontsize}]}>
+                    {life}{props.index}
+                </Text>
+                <Btn 
+                        title="Rotate"
+                        color={COLORS.btnSecondary}
+                        onPress={() => {
+                            setRotationIndex((rotateIndex + 1) % rotations.length)
+                            setRotate(rotations[rotateIndex])
+                        }}
+                    />   
+                </View>
+
+            </View>
+            <TouchableOpacity 
+            onPress={() => setLife(life+1)}
+            style={{flex:1, backgroundColor:'blue', justifyContent: 'center'}}>
+            <View>
+            <Text style={{textAlign:'center'}}>
+                +
+            </Text>
+            </View>
+            </TouchableOpacity>
+        </View>
+    )
+
+    /*
     return (
         <View style={[styles.container , {backgroundColor: life > 0 ? COLORS[color] : 'rgb(255,100,98)'}]} onLayout={(e) => onLayout(e)}>
             {widthHeight !== null && 
@@ -50,20 +87,14 @@ const Player = (props) => {
                         setColorIndex((colorIndex + 1) % colors.length) 
                         setColor(colors[colorIndex])
                         }}/>
-                    <Btn 
-                        title="Rotate"
-                        color={COLORS.btnSecondary}
-                        onPress={() => {
-                            setRotationIndex((rotateIndex + 1) % rotations.length)
-                            setRotate(rotations[rotateIndex])
-                        }}
-                    />    
+ 
                     
                 </View>
             </View>
             }
         </View> 
     )
+    */
 } 
 
 const styles = StyleSheet.create({
