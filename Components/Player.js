@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { StyleSheet, Button, Text, View, TouchableOpacity } from "react-native";
-import Btn from './Btn';
+import { Feather } from '@expo/vector-icons'; 
 import { COLORS } from '../Values/Colors';
+import Btn from './Btn';
+
 
 const Player = (props) => {
    
@@ -15,15 +17,24 @@ const Player = (props) => {
     const [rotate, setRotate] = useState(props.rotation)
     const [rotateIndex, setRotationIndex] = useState(rotations.indexOf(props.rotation) + 1)
 
+
+    const getRotation = (rotation) => {
+        if (rotation == '0deg') {
+            return 'row'
+        }
+        if (rotation == '180deg') {
+            return 'row-reverse'
+        }
+    }
+
     useEffect(() => {
         setFontsize(props.fontsize)
         setLife(props.health)
         setRotationIndex(rotations.indexOf(props.rotation) + 1)
     }, [props.rotation, props.health, props.fontsize])
-
-
+ 
     return (
-        <View style={{flex:1, flexDirection:'row' }  }>
+        <View style={{flex:1, flexDirection: getRotation(rotate) }  }>
             <TouchableOpacity 
             onPress={() => setLife(life-1)}
             style={{flex:1 , backgroundColor:'red' ,  justifyContent: 'center'}}>
@@ -33,22 +44,30 @@ const Player = (props) => {
             </Text>
             </View>
             </TouchableOpacity>
-            <View style={{flex:6 , backgroundColor:'green', alignItems:'center', justifyContent:'center' }}>
+
+            <View style={{flex:6 , backgroundColor: life > 0 ? COLORS[color] : 'rgb(255,100,98)', 
+            alignItems:'center', justifyContent:'center', flexDirection:'column' }}>
                 <View style={{transform: [{rotate: rotate ? rotate : "0deg"}], textAlign:'center'}}>
                 <Text style={[styles.text, {fontSize:fontsize}]}>
                     {life}{props.index}
                 </Text>
-                <Btn 
-                        title="Rotate"
-                        color={COLORS.btnSecondary}
-                        onPress={() => {
-                            setRotationIndex((rotateIndex + 1) % rotations.length)
-                            setRotate(rotations[rotateIndex])
-                        }}
-                    />   
-                </View>
+                <View style={{backgroundColor:'green', alignItems:'center'}}>
+                <View style={{width:40, backgroundColor:'red'}}>
+                <Feather 
+                name="rotate-cw" 
+                size={32} 
+                color="black" 
+                onPress={() => {
+                    setRotationIndex((rotateIndex + 1) % rotations.length)
+                    setRotate(rotations[rotateIndex])
+                }}
+                />
+                </View>    
 
+                </View>
+                </View>
             </View>
+
             <TouchableOpacity 
             onPress={() => setLife(life+1)}
             style={{flex:1, backgroundColor:'blue', justifyContent: 'center'}}>
@@ -93,6 +112,8 @@ const Player = (props) => {
             </View>
             }
         </View> 
+
+
     )
     */
 } 
@@ -100,7 +121,6 @@ const Player = (props) => {
 const styles = StyleSheet.create({
     container: {
       flex:1,
-      //alignItems: 'center',
     },
     text: {
         fontSize: 32,
