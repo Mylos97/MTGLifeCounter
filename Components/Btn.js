@@ -1,6 +1,6 @@
-import react,{ useState} from "react"
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Pressable, StyleSheet, View, Text  } from 'react-native';
+import { MyText} from './MyText'
+import { COLORS } from "../Values/Colors";
 
 
 const Btn = (props) => {
@@ -11,8 +11,9 @@ const Btn = (props) => {
                 }}
             >
             <View style={[styles.btn, {backgroundColor:props.color}, props.style]}>
-                <Text>
-                {props.title}
+                <Text 
+                style={{color:COLORS.colorSecondary}}
+                > {props.title}
                 </Text>
             </View>
         </Pressable>

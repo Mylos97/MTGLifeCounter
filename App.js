@@ -1,12 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Modal, Button } from 'react-native';
 import { registerRootComponent } from 'expo';
-import { Dimensions } from 'react-native';
+import { useFonts } from 'expo-font';
 import { TouchableWithoutFeedback } from 'react-native-web';
 import React, { useState, useEffect } from 'react'
 import GestureRecognizer from 'react-native-swipe-gestures';
 import Player from './Components/Player';
 import Btn from './Components/Btn';
+import MyText from './Components/MyText';
 import { COLORS } from './Values/Colors';
 
 const generateID = () => {
@@ -27,19 +28,17 @@ const PlayerScreen = (props) => {
   if (props.length === 4) {
     return (
       <View style={styles.container}>
-          <View style={styles.row6}>
+          <View style={{flexDirection:'row'}}>
             {props.players[0]}
             {props.players[1]}
           </View>
-          <View style={styles.row6}>
+          <View style={{flexDirection:'row'}}>
             {props.players[2]}
             {props.players[3]}
           </View>
     </View>
     )
   }
-
-
   if (props.length === 5) {
     return (
       <View style={{flex:1 , flexDirection:'column'}}>
@@ -76,13 +75,11 @@ const PlayerScreen = (props) => {
     </View>
     )
   }
-
-
 }
 
 
 function MainScreen() {
-  const fontSizes = {2:100,3:90,4:60,5:50,6:40}
+  const fontSizes = {2:100,3:90,4:80,5:70,6:60}
   const [playersID, setPlayersID] = useState({players:
     [{id:generateID(), rotation:"180deg", health:20, fontsize:fontSizes[2]},
     {id:generateID(), rotation:"0deg", health:20, fontsize:fontSizes[2]},] })
@@ -240,8 +237,7 @@ function MainScreen() {
       setShowBar(true)
     }}
     onSwipeRight={() => {
-      if(showBar){
-        setShowBar(false)}
+        setShowBar(false)
     }}
     >
     <TouchableWithoutFeedback 
@@ -260,32 +256,34 @@ function MainScreen() {
         }}
         onPress={(e) => e.preventDefault()}
       >
-        <View style={styles.centeredView} >
-          <View style={styles.modalView}>
+        <View style={[{flex: 1}, showBar ? {backgroundColor:'rgba(0,0,0,0.2)'} : '']}>
+          <View style={[styles.modalView]}>
               <View style={styles.addBtns}>
                 <View style={styles.btn}>
                   <Btn 
-                  color={COLORS.btnAdd}
+                  color={COLORS.colorTertiary}
                   onPress={() => addPlayer()} 
                   title="Add player" />
                 </View>
                 <View>
                 <Btn 
-                color={COLORS.btnRemove}
+                color={COLORS.colorTertiary}
                 onPress={() => removePlayer()} 
                 title="Remove player"/>
                 </View>
               </View>
               <View>
-                <Text>
-                  Life total
-                </Text>
+                <MyText 
+                style={{color:COLORS.colorSecondary}}
+                text='Life total'
+                >
+                </MyText>
                 <View>
                 </View>
                 <Btn 
                 onPress={() => updatePlayerHealth()}
                 title={playerHealth}
-                color={COLORS.red}
+                color={COLORS.colorTertiary}
                 ></Btn>
               </View>
           </View>
@@ -300,6 +298,14 @@ function MainScreen() {
 }
 
 export default function App() {
+  let [fontsLoaded] = useFonts({
+    'BebasNeue-Regular': require('./assets/BebasNeue-Regular.ttf'),
+  });
+
+  if(!fontsLoaded) {
+      return null
+  }
+
   return (
       <MainScreen/>
   );
@@ -315,18 +321,10 @@ const styles = StyleSheet.create({
   container: {
     flex:1,
   },
-  row : {
-    flex:2,
-    flexDirection: 'row', 
-  },
-  row6: {
-    flex:1,
-    flexDirection: 'row',
-  },
   modalView: {
     margin: 20,
     marginTop: 70,
-    backgroundColor: "white",
+    backgroundColor: COLORS.colorPrimary,
     borderRadius: 20,
     padding: 35,
     alignItems: "center",
@@ -336,14 +334,10 @@ const styles = StyleSheet.create({
       height: 2
     },
     shadowOpacity: 0.25,
-    shadowRadius: 4,
+    shadowRadius: 8,
     elevation: 5,
     flexDirection:'row',
     justifyContent:'center'
-  },
-  centeredView: {
-    flex: 1,
-    //transform: [{ rotate:'90deg'} ,{translateY:Dimensions.get('window').width/2}]
   },
   btn: {
     marginBottom:12,
