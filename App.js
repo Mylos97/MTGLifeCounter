@@ -19,7 +19,7 @@ const PlayerScreen = (props) => {
 
   if(props.length < 4) {
     return (
-      <View style={styles.players}>
+      <View style={{flex:1}}>
         {props.players}
       </View>
     )
@@ -27,12 +27,12 @@ const PlayerScreen = (props) => {
 
   if (props.length === 4) {
     return (
-      <View style={styles.container}>
-          <View style={{flexDirection:'row'}}>
+      <View style={{flex:1, flexDirection:'column' }}>
+          <View style={{flex: 1, flexDirection:'row'}}>
             {props.players[0]}
             {props.players[1]}
           </View>
-          <View style={{flexDirection:'row'}}>
+          <View style={{flex:1, flexDirection:'row'}}>
             {props.players[2]}
             {props.players[3]}
           </View>
@@ -46,7 +46,7 @@ const PlayerScreen = (props) => {
           {props.players[0]}
           {props.players[1]}
         </View>
-        <View style={{backgroundColor:'green', flex:4}}>
+        <View style={{ flex:4}}>
           {props.players[4]}
         </View>
         <View style={{flex:6, backgroundColor:'blue', flexDirection:'row'}}>
@@ -59,7 +59,7 @@ const PlayerScreen = (props) => {
 
   if (props.length === 6) {
     return (
-      <View style={styles.container}>
+      <View style={{flex:1}}>
           <View style={{flexDirection:'row', flex:1}}>
             {props.players[0]}
             {props.players[1]}
@@ -246,7 +246,8 @@ function MainScreen() {
         setShowBar(false)
       }
     }}>
-      <View style={styles.players}>
+      <View style={[styles.players]}>
+      <View style={{flex:1, marginTop:16}}> 
       <Modal
         animationType='fade'
         transparent={true}
@@ -256,7 +257,7 @@ function MainScreen() {
         }}
         onPress={(e) => e.preventDefault()}
       >
-        <View style={[{flex: 1}, showBar ? {backgroundColor:'rgba(0,0,0,0.2)'} : '']}>
+        <View style={[{flex: 1}, showBar ? {backgroundColor:'rgba(0,0,0,0.3)'} : '']}>
           <View style={[styles.modalView]}>
               <View style={styles.addBtns}>
                 <View style={styles.btn}>
@@ -274,7 +275,7 @@ function MainScreen() {
               </View>
               <View>
                 <MyText 
-                style={{color:COLORS.colorSecondary}}
+                style={{color:COLORS.colorSecondary, fontSize:18}}
                 text='Life total'
                 >
                 </MyText>
@@ -291,6 +292,7 @@ function MainScreen() {
       </Modal>
         <PlayerScreen players= {players} length={playersID.players.length}/>
         <StatusBar style="auto" />
+        </View>
       </View>
     </TouchableWithoutFeedback>
     </GestureRecognizer>
@@ -298,9 +300,9 @@ function MainScreen() {
 }
 
 export default function App() {
-  let [fontsLoaded] = useFonts({
+  const [fontsLoaded] = useFonts({
     'BebasNeue-Regular': require('./assets/BebasNeue-Regular.ttf'),
-  });
+  })
 
   if(!fontsLoaded) {
       return null
@@ -308,7 +310,7 @@ export default function App() {
 
   return (
       <MainScreen/>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -316,7 +318,7 @@ const styles = StyleSheet.create({
     flex: 1,
     overflow:'hidden',
     borderColor:'#fff',
-    backgroundColor:'grey',
+    backgroundColor:COLORS.colorPrimary,
   },
   container: {
     flex:1,
@@ -325,7 +327,7 @@ const styles = StyleSheet.create({
     margin: 20,
     marginTop: 70,
     backgroundColor: COLORS.colorPrimary,
-    borderRadius: 20,
+    borderRadius: 10,
     padding: 35,
     alignItems: "center",
     shadowColor: "#000",
@@ -333,8 +335,8 @@ const styles = StyleSheet.create({
       width: 0,
       height: 2
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 8,
+    shadowOpacity: 0.5,
+    shadowRadius: 12,
     elevation: 5,
     flexDirection:'row',
     justifyContent:'center'

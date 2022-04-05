@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, View, Text  } from 'react-native';
-import { MyText} from './MyText'
+import  MyText from './MyText'
 import { COLORS } from "../Values/Colors";
 
 
@@ -11,10 +11,10 @@ const Btn = (props) => {
                 }}
             >
             <View style={[styles.btn, {backgroundColor:props.color}, props.style]}>
-                <Text 
-                style={{color:COLORS.colorSecondary}}
-                > {props.title}
-                </Text>
+                <MyText 
+                style={{color:COLORS.colorSecondary, fontSize:17}}
+                text={props.title}
+                />
             </View>
         </Pressable>
     )
@@ -24,12 +24,11 @@ const styles = StyleSheet.create({
     btn:{
         alignItems:'center',
         margin:4,
-        padding:8,
+        padding:10,
         borderRadius:4,
     },
     btnHighlight: {
         flex:1,
-        
     }
 });
 
