@@ -80,22 +80,35 @@ const PlayerScreen = (props) => {
 
 function MainScreen() {
   const fontSizes = {2:100,3:90,4:80,5:70,6:60}
-  const [playersID, setPlayersID] = useState({players:
-    [{id:generateID(), rotation:"180deg", health:20, fontsize:fontSizes[2]},
-    {id:generateID(), rotation:"0deg", health:20, fontsize:fontSizes[2]},] })
   const [showBar, setShowBar] = useState(false)
   const [playerHealth, setPlayerHealth] = useState(20)
-  const [players, setPlayers] = useState(playersID.players.map((player) => 
-  <Player key={player.id} health={playerHealth} rotation={player.rotation} fontsize={player.fontsize}/>))
+  const [mode, setMode] = useState('Standard')
+  const [playersID, setPlayersID] = useState(
+        {players: [{id:generateID(), rotation:"180deg", health:20, fontsize:fontSizes[2], mode:mode},
+        {id:generateID(), rotation:"0deg", health:20, fontsize:fontSizes[2], mode:mode}]})
+  const [players, setPlayers] = useState(
+        playersID.players.map((player) => 
+        <Player key={player.id} health={playerHealth} rotation={player.rotation} fontsize={player.fontsize}/>))
 
   const updatePlayers = () => {
     setPlayers(playersID.players.map((player, i) => (
-    <Player key={player.id} health={player.health} rotation={player.rotation} index={i} fontsize={fontSizes[players.length]}/>)))
+    <Player 
+    key={player.id} 
+    health={player.health} 
+    rotation={player.rotation} 
+    index={i} 
+    fontsize={fontSizes[players.length]}
+    mode={player.mode}  
+    />)))
   }
 
   useEffect(() => {
     updatePlayers()
   }, [playersID])
+
+  useEffect(() => {
+    updateMode()
+  },[mode])
 
   const updatePlayerHealth = () => {
     const tmpPlayers = {...playersID}
@@ -112,6 +125,17 @@ function MainScreen() {
         return p
       })
     } 
+    setPlayersID(tmpPlayers)
+    updatePlayers()
+  }
+
+  const updateMode = () => {
+    const tmpPlayers = {...playersID}
+    console.log(tmpPlayers, mode)
+    tmpPlayers.players.map((p) => {
+      p.mode = mode
+      return p
+    })
     setPlayersID(tmpPlayers)
     updatePlayers()
   }
@@ -273,7 +297,7 @@ function MainScreen() {
                 title="Remove player"/>
                 </View>
               </View>
-              <View>
+              <View style={{ marginRight:12}}>
                 <MyText 
                 style={{color:COLORS.colorSecondary, fontSize:18}}
                 text='Life total'
@@ -286,6 +310,19 @@ function MainScreen() {
                 title={playerHealth}
                 color={COLORS.colorTertiary}
                 ></Btn>
+              </View>
+              <View style={{alignItems:'center', marginLeft:8}}>
+                <MyText 
+                  text='Game mode'
+                  style={{color:COLORS.colorSecondary, fontSize:18}}
+                />
+                <Btn 
+                  onPress={() => {
+                  setMode(mode => mode == 'Standard' ? 'Commander' : 'Standard')
+                  }}
+                  title={mode}
+                  color={COLORS.colorTertiary}
+                />
               </View>
           </View>
         </View>

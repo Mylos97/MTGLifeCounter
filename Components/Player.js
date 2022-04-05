@@ -12,16 +12,18 @@ const Player = (props) => {
     const [fontsize, setFontsize] = useState(props.fontsize)
     const [life, setLife] = useState(props.health)
     const [rotate, setRotate] = useState(props.rotation)
+    const [mode, setMode] = useState(props.mode)
     const [rotateIndex, setRotationIndex] = useState(rotations.indexOf(props.rotation) + 1)
     const [longPressPositive, setLongPressPositive] = useState(null)
     const [longPressNegative, setLongPressNegative] = useState(null)
-    const tick = 200
+    const tick = 180
 
     useEffect(() => {
         setFontsize(props.fontsize)
         setLife(props.health)
         setRotationIndex(rotations.indexOf(props.rotation) + 1)
-    }, [props.rotation, props.health, props.fontsize])
+        setMode(props.mode)
+    }, [props.rotation, props.health, props.fontsize, props.mode])
     
     useEffect(() => {
         if(longPressNegative !== null) {
@@ -29,7 +31,7 @@ const Player = (props) => {
                 if (!longPressNegative) {
                     clearInterval(interval)
                 }
-                setLife(life => life - 1)
+                if(longPressNegative) setLife(life => life - 1)
                 }, tick)
             return () => {
                 clearInterval(interval)
@@ -43,7 +45,7 @@ const Player = (props) => {
                 if (!longPressPositive) {
                     clearInterval(interval)
                 }
-                setLife(life => life + 1)
+                if(longPressPositive) setLife(life => life + 1)
                 }, tick)
             return () => {
                 clearInterval(interval)
@@ -70,7 +72,7 @@ const Player = (props) => {
                     />
                 </TouchableOpacity>
                 <MyText 
-                style={{fontSize:fontsize, color:COLORS.colorSecondary, marginLeft:fontsize/8, marginRight:fontsize/8}}
+                style={{fontSize:fontsize, color:COLORS.colorSecondary, marginLeft:fontsize/10, marginRight:fontsize/10}}
                 text={life}
                 />
                 <TouchableOpacity 
@@ -85,6 +87,13 @@ const Player = (props) => {
                     />
                 </TouchableOpacity>
                 </View>
+                {mode === 'Commander' &&
+                <View>
+                    <MyText
+                        text='test'
+                    />
+                </View> 
+                }
                 <Feather 
                     name="rotate-cw" 
                     size={fontsize/3} 
