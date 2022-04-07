@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Button, Text, View, TouchableOpacity } from "react-native";
+import { StyleSheet, Button, Text, View, TouchableOpacity, TouchableWithoutFeedback} from "react-native";
 import { Feather } from '@expo/vector-icons'; 
 import { COLORS } from '../Values/Colors';
 import Btn from './Btn';
@@ -16,6 +16,8 @@ const Player = (props) => {
     const [rotateIndex, setRotationIndex] = useState(rotations.indexOf(props.rotation) + 1)
     const [longPressPositive, setLongPressPositive] = useState(null)
     const [longPressNegative, setLongPressNegative] = useState(null)
+    const [commanderDamage, setCommanderDamage] = useState(0)
+    const [showCommanderDamage, setShowCommanderDamage] = useState(false)
     const tick = 180
 
     useEffect(() => {
@@ -23,6 +25,11 @@ const Player = (props) => {
         setLife(props.health)
         setRotationIndex(rotations.indexOf(props.rotation) + 1)
         setMode(props.mode)
+
+        if(props.mode === 'Standard') {
+            setShowCommanderDamage(false)
+        }
+
     }, [props.rotation, props.health, props.fontsize, props.mode])
     
     useEffect(() => {
@@ -56,10 +63,17 @@ const Player = (props) => {
 
     return (
         <View style={{backgroundColor:life > 0 ? COLORS.colorPrimary : COLORS.red, flex:1, justifyContent:'center', alignItems:'center'}}>
-            <View style={{flexDirection:'column', alignItems:'center' , justifyContent:'center', transform: [{rotate: rotate ? rotate : "0deg"}]}}>
+            <View style={{flex:1, flexDirection:'column', alignItems:'center' , justifyContent:'center', transform: [{rotate: rotate ? rotate : "0deg"}]}}>
                 <View style={{flexDirection:'row'}}>
                 <TouchableOpacity 
-                onPress={() => setLife(life - 1)} 
+                onPress={() => {
+                    if( mode === 'Standard') {
+                        setLife(life => life - 1)
+                    }
+                    if( mode === 'Commander') {
+                        setCommanderDamage(life => life - 1)
+                    }
+                }} 
                 style={{flex:1, justifyContent:'center', width:fontsize/2, alignItems:'center'}}
                 onLongPress={() => {
                     setLongPressNegative(true)}}
@@ -71,12 +85,33 @@ const Player = (props) => {
                     text='-'
                     />
                 </TouchableOpacity>
+                <TouchableOpacity>
+
+                </TouchableOpacity>
+                <TouchableWithoutFeedback
+                onPress={() => { 
+                    if (mode === 'Commander') {
+                        setShowCommanderDamage(showCommanderDamage => !showCommanderDamage)
+                    }
+                }}
+                >
+                <View>
                 <MyText 
                 style={{fontSize:fontsize, color:COLORS.colorSecondary, marginLeft:fontsize/10, marginRight:fontsize/10}}
-                text={life}
+                text={!showCommanderDamage ? life : commanderDamage}
                 />
+                </View>
+                </TouchableWithoutFeedback>
+
                 <TouchableOpacity 
-                onPress={() => {setLife(life + 1)}} 
+                onPress={() => {
+                    if (mode === 'Standard') {
+                        setLife(life => life + 1)
+                    }
+                    if (mode === 'Commander') {
+                        setCommanderDamage(life => life + 1)
+                    }
+                    }} 
                 style={{ flex:1, justifyContent:'center', width:fontsize/2, alignItems:'center'}}
                 onLongPress={() => setLongPressPositive(true)}
                 onPressOut={() => setLongPressPositive(false)}
@@ -87,22 +122,24 @@ const Player = (props) => {
                     />
                 </TouchableOpacity>
                 </View>
-                {mode === 'Commander' &&
-                <View>
-                    <MyText
-                        text='test'
-                    />
-                </View> 
-                }
+                <View style={{ flexDirection:'column', alignItems:'center'}}>
+                <TouchableOpacity
+                onPress={() => {
+                    setRotationIndex((rotateIndex + 1) % rotations.length)
+                    setRotate(rotations[rotateIndex])
+                }}
+                hitSlop={{left:25,right:25, bottom:25}}
+                >
                 <Feather 
                     name="rotate-cw" 
                     size={fontsize/3} 
                     color={COLORS.colorSecondary} 
-                    onPress={() => {
-                        setRotationIndex((rotateIndex + 1) % rotations.length)
-                        setRotate(rotations[rotateIndex])
-                    }}
+
                 />
+                </TouchableOpacity>
+                </View>
+
+
             </View>
         </View>
     )

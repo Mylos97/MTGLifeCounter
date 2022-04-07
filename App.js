@@ -143,7 +143,7 @@ function MainScreen() {
   const addPlayer = () => {
     if(playersID.players.length < 6) {
       const tmpPlayers = {...playersID}
-      tmpPlayers.players.push({id: generateID(), health:playerHealth})
+      tmpPlayers.players.push({id: generateID(), health:playerHealth, mode:mode})
       if(tmpPlayers.players.length <= 3) {
         tmpPlayers.players.map((player,i) => {
           if (i == 1) {
