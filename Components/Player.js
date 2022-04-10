@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Button, Text, View, TouchableOpacity, TouchableWithoutFeedback} from "react-native";
+import { StyleSheet, TextInput, View, TouchableOpacity, TouchableWithoutFeedback} from "react-native";
 import { Feather } from '@expo/vector-icons'; 
 import { COLORS } from '../Values/Colors';
 import Btn from './Btn';
@@ -13,6 +13,7 @@ const Player = (props) => {
     const [life, setLife] = useState(props.health)
     const [rotate, setRotate] = useState(props.rotation)
     const [mode, setMode] = useState(props.mode)
+    const [name, setName] = useState('')
     const [rotateIndex, setRotationIndex] = useState(rotations.indexOf(props.rotation) + 1)
     const [longPressPositive, setLongPressPositive] = useState(null)
     const [longPressNegative, setLongPressNegative] = useState(null)
@@ -67,10 +68,10 @@ const Player = (props) => {
                 <View style={{flexDirection:'row'}}>
                 <TouchableOpacity 
                 onPress={() => {
-                    if( mode === 'Standard') {
+                    if( !showCommanderDamage ) {
                         setLife(life => life - 1)
                     }
-                    if( mode === 'Commander') {
+                    if( showCommanderDamage ) {
                         setCommanderDamage(life => life - 1)
                     }
                 }} 
@@ -105,10 +106,10 @@ const Player = (props) => {
 
                 <TouchableOpacity 
                 onPress={() => {
-                    if (mode === 'Standard') {
+                    if (!showCommanderDamage) {
                         setLife(life => life + 1)
                     }
-                    if (mode === 'Commander') {
+                    if (showCommanderDamage) {
                         setCommanderDamage(life => life + 1)
                     }
                     }} 
@@ -123,6 +124,17 @@ const Player = (props) => {
                 </TouchableOpacity>
                 </View>
                 <View style={{ flexDirection:'column', alignItems:'center'}}>
+                <TextInput
+                    style={{height:fontsize/3, fontSize:fontsize/5, 
+                    textAlign:'center', color:COLORS.colorSecondary, 
+                    marginBottom:12, fontFamily:'BebasNeue-Regular',
+                    opacity:name === '' ? 0.5 : 1, borderWidth:0}} 
+                    value={name}
+                    onChangeText={setName}
+                    placeholder='Name'
+                    placeholderTextColor={COLORS.colorSecondary}
+                />
+
                 <TouchableOpacity
                 onPress={() => {
                     setRotationIndex((rotateIndex + 1) % rotations.length)
@@ -130,6 +142,7 @@ const Player = (props) => {
                 }}
                 hitSlop={{left:25,right:25, bottom:25}}
                 >
+
                 <Feather 
                     name="rotate-cw" 
                     size={fontsize/3} 

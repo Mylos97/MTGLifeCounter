@@ -9,6 +9,9 @@ import Player from './Components/Player';
 import Btn from './Components/Btn';
 import MyText from './Components/MyText';
 import { COLORS } from './Values/Colors';
+import { storeData } from './Values/Storage';
+import { getData } from './Values/Storage';
+
 
 const generateID = () => {
   const r = (Math.random() + 1).toString(36).substring(7)
@@ -80,6 +83,7 @@ const PlayerScreen = (props) => {
 
 function MainScreen() {
   const fontSizes = {2:100,3:90,4:80,5:70,6:60}
+  const themes = ['purple', 'grey']
   const [showBar, setShowBar] = useState(false)
   const [playerHealth, setPlayerHealth] = useState(20)
   const [mode, setMode] = useState('Standard')
@@ -89,7 +93,8 @@ function MainScreen() {
   const [players, setPlayers] = useState(
         playersID.players.map((player) => 
         <Player key={player.id} health={playerHealth} rotation={player.rotation} fontsize={player.fontsize}/>))
-
+  const [themeIndex, setThemeIndex] = useState(0)
+  getData().then(value => console.log(value))
   const updatePlayers = () => {
     setPlayers(playersID.players.map((player, i) => (
     <Player 
@@ -322,6 +327,14 @@ function MainScreen() {
                   }}
                   title={mode}
                   color={COLORS.colorTertiary}
+                  style={{paddingLeft: 15, paddingRight: 15}}
+                />
+                <Btn
+                  onPress={() => {
+                    setThemeIndex(index => (index + 1) % themes.length )
+                    storeData(themeIndex)
+                  }}
+                  title={themes[themeIndex]}
                 />
               </View>
           </View>
