@@ -1,22 +1,23 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Modal, Button } from 'react-native';
+import { StyleSheet, View, Modal, KeyboardAvoidingView, Platform, Keyboard ,TouchableOpacity} from 'react-native';
 import { registerRootComponent } from 'expo';
-import { useFonts } from 'expo-font';
+import {useFonts} from 'expo-font';
 import { TouchableWithoutFeedback } from 'react-native-web';
-import React, { useState, useEffect } from 'react'
+import { getData, storeData } from './Values/Storage';
+import React, { useState, useEffect, useRef } from 'react'
 import GestureRecognizer from 'react-native-swipe-gestures';
 import Player from './Components/Player';
 import Btn from './Components/Btn';
 import MyText from './Components/MyText';
-import { COLORS } from './Values/Colors';
-import { storeData } from './Values/Storage';
-import { getData } from './Values/Storage';
+import { COLORS, getTheme, updateIndex } from './Values/Colors';
+
 
 
 const generateID = () => {
   const r = (Math.random() + 1).toString(36).substring(7)
   return r
 }
+
 
 const PlayerScreen = (props) => {
 
@@ -81,20 +82,54 @@ const PlayerScreen = (props) => {
 }
 
 
-function MainScreen() {
+const CommanderTable = (props) => {
+  
+  return (
+    <View style={{flex: 1, backgroundColor: '#fff' }}>
+    <Table borderStyle={{borderWidth: 1}}>
+      <Row data={props.tableHead} style={{height: 40}} textStyle={{fontFamily:'BebasNeue-Regular'}}/>
+      <TableWrapper style={{ flexDirection:'row'}}>
+        <Col data={props.tableTitle} heightArr={[28,28]} style={{flex: 1, height:40}} textStyle={{fontFamily:'BebasNeue-Regular'}}/>
+        <Rows data={props.tableData} style={{height:40}} textStyle={{fontFamily:'BebasNeue-Regular'}}/>
+      </TableWrapper>
+    </Table>
+  </View>
+  )
+}
+
+const MainScreen = () => {
   const fontSizes = {2:100,3:90,4:80,5:70,6:60}
-  const themes = ['purple', 'grey']
+  const themes = ['purple', 'pink', 'grey']
   const [showBar, setShowBar] = useState(false)
   const [playerHealth, setPlayerHealth] = useState(20)
-  const [mode, setMode] = useState('Standard')
+  const [mode, setMode] = useState('Commander')
+  const [themeIndex, setThemeIndex] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [theme, setTheme] = useState(getTheme())
+  const [players, setPlayers] = useState(null)
+  const [showCommanderDamage, setShowCommanderDamage] = useState(false)
+  const [table, setTable] = useState(null)
   const [playersID, setPlayersID] = useState(
-        {players: [{id:generateID(), rotation:"180deg", health:20, fontsize:fontSizes[2], mode:mode},
-        {id:generateID(), rotation:"0deg", health:20, fontsize:fontSizes[2], mode:mode}]})
-  const [players, setPlayers] = useState(
-        playersID.players.map((player) => 
-        <Player key={player.id} health={playerHealth} rotation={player.rotation} fontsize={player.fontsize}/>))
-  const [themeIndex, setThemeIndex] = useState(0)
-  getData().then(value => console.log(value))
+        {players: [{id:generateID(), rotation:"180deg", health:20, fontsize:fontSizes[2], mode:mode, theme:theme, size:2},
+        {id:generateID(), rotation:"0deg", health:20, fontsize:fontSizes[2], mode:mode, theme:theme, size:2}]})
+  const componentMounted = useRef(true)
+  
+  useEffect(async () => {
+    let isMounted = true
+    try {
+      if(isMounted) setLoading(true)
+      await getData().then(data => {
+        if(isMounted) setThemeIndex(data.index)
+        if(isMounted) setLoading(false)
+        if(isMounted) updatePlayers()
+        if(isMounted) updateIndex(data.index)
+      })
+    } catch (e) {
+      console.log(e)
+    }
+    return () => {isMounted = false}
+  },[])
+
   const updatePlayers = () => {
     setPlayers(playersID.players.map((player, i) => (
     <Player 
@@ -102,8 +137,10 @@ function MainScreen() {
     health={player.health} 
     rotation={player.rotation} 
     index={i} 
-    fontsize={fontSizes[players.length]}
+    fontsize={fontSizes[playersID.players.length]}
     mode={player.mode}  
+    theme={theme}
+    size={playersID.players.length}
     />)))
   }
 
@@ -114,6 +151,17 @@ function MainScreen() {
   useEffect(() => {
     updateMode()
   },[mode])
+
+  useEffect(() => {
+    updatePlayers()
+  },[theme])
+
+  useEffect(() => {
+    storeData({index:themeIndex}).then(() => {
+      updateIndex(themeIndex)
+      setTheme(getTheme())
+    })
+  },[themeIndex])
 
   const updatePlayerHealth = () => {
     const tmpPlayers = {...playersID}
@@ -136,7 +184,6 @@ function MainScreen() {
 
   const updateMode = () => {
     const tmpPlayers = {...playersID}
-    console.log(tmpPlayers, mode)
     tmpPlayers.players.map((p) => {
       p.mode = mode
       return p
@@ -148,7 +195,7 @@ function MainScreen() {
   const addPlayer = () => {
     if(playersID.players.length < 6) {
       const tmpPlayers = {...playersID}
-      tmpPlayers.players.push({id: generateID(), health:playerHealth, mode:mode})
+      tmpPlayers.players.push({id: generateID(), health:playerHealth, mode:mode, theme:theme})
       if(tmpPlayers.players.length <= 3) {
         tmpPlayers.players.map((player,i) => {
           if (i == 1) {
@@ -258,6 +305,9 @@ function MainScreen() {
     } 
   }
 
+  if(loading) {
+    return null
+  }
 
   return (
     <GestureRecognizer 
@@ -268,15 +318,24 @@ function MainScreen() {
     onSwipeRight={() => {
         setShowBar(false)
     }}
+    onSwipeUp={() => {
+      setShowBar(true)
+    }}
+    onSwipeDown={() => {
+      setShowBar(false)
+    }}
     >
+    
     <TouchableWithoutFeedback 
-    onPress={() =>{
+    onPress={() => {
       if(showBar) {
         setShowBar(false)
       }
-    }}>
-      <View style={[styles.players]}>
-      <View style={{flex:1, marginTop:16}}> 
+      Keyboard.dismiss()}}>
+      <View style={[styles.players , {backgroundColor:theme ? theme.primary : null}]}>
+      <KeyboardAvoidingView 
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{flex:1, marginTop:16}}> 
       <Modal
         animationType='fade'
         transparent={true}
@@ -286,63 +345,75 @@ function MainScreen() {
         }}
         onPress={(e) => e.preventDefault()}
       >
-        <View style={[{flex: 1}, showBar ? {backgroundColor:'rgba(0,0,0,0.3)'} : '']}>
-          <View style={[styles.modalView]}>
+        <View style={[{flex: 1}, showBar | showCommanderDamage ? {backgroundColor:'rgba(0,0,0,0.3)'} : '']}>
+          <View style={[styles.modalView, {backgroundColor: theme ? theme.primary : null, flexDirection:'column'}]}>
+              <View style={{flexDirection:'row'}}>
+
               <View style={styles.addBtns}>
-                <View style={styles.btn}>
+                <View>
+                <MyText 
+                style={{color:theme ? theme.secondary : COLORS.colorSecondary, fontSize:18, textAlign:'center'}}
+                text='Players'
+                />
                   <Btn 
-                  color={COLORS.colorTertiary}
+                  color={theme ? theme.tertiary : COLORS.colorTertiary}
+                  textColor={theme ? theme.secondary : COLORS.colorSecondary}
                   onPress={() => addPlayer()} 
                   title="Add player" />
                 </View>
                 <View>
                 <Btn 
-                color={COLORS.colorTertiary}
+                color={theme ? theme.tertiary : COLORS.colorTertiary}
+                textColor={theme ? theme.secondary : COLORS.colorSecondary}
                 onPress={() => removePlayer()} 
                 title="Remove player"/>
                 </View>
               </View>
-              <View style={{ marginRight:12}}>
+              <View style={{ marginRight:8}}>
                 <MyText 
-                style={{color:COLORS.colorSecondary, fontSize:18}}
+                style={{color:theme ? theme.secondary : COLORS.colorSecondary, fontSize:18}}
                 text='Life total'
-                >
-                </MyText>
+                />
                 <View>
                 </View>
                 <Btn 
                 onPress={() => updatePlayerHealth()}
                 title={playerHealth}
-                color={COLORS.colorTertiary}
+                color={theme ? theme.tertiary : COLORS.colorTertiary}
+                textColor={theme ? theme.secondary : COLORS.colorSecondary}
                 ></Btn>
               </View>
               <View style={{alignItems:'center', marginLeft:8}}>
                 <MyText 
                   text='Game mode'
-                  style={{color:COLORS.colorSecondary, fontSize:18}}
+                  style={{color:theme ? theme.secondary : COLORS.colorSecondary, fontSize:18}}
                 />
                 <Btn 
                   onPress={() => {
                   setMode(mode => mode == 'Standard' ? 'Commander' : 'Standard')
                   }}
                   title={mode}
-                  color={COLORS.colorTertiary}
-                  style={{paddingLeft: 15, paddingRight: 15}}
+                  color={theme ? theme.tertiary : COLORS.colorTertiary}
+                  textColor={theme ? theme.secondary : COLORS.colorSecondary}
+                  style={{width:88}}
                 />
                 <Btn
+                  style={{width:88}}
+                  color={theme ? theme.tertiary : COLORS.colorTertiary}
+                  textColor={theme ? theme.secondary : COLORS.colorSecondary}
                   onPress={() => {
-                    setThemeIndex(index => (index + 1) % themes.length )
-                    storeData(themeIndex)
+                    setThemeIndex(i => (i + 1) % themes.length )
                   }}
                   title={themes[themeIndex]}
                 />
+              </View>
               </View>
           </View>
         </View>
       </Modal>
         <PlayerScreen players= {players} length={playersID.players.length}/>
         <StatusBar style="auto" />
-        </View>
+        </KeyboardAvoidingView>
       </View>
     </TouchableWithoutFeedback>
     </GestureRecognizer>
@@ -353,6 +424,7 @@ export default function App() {
   const [fontsLoaded] = useFonts({
     'BebasNeue-Regular': require('./assets/BebasNeue-Regular.ttf'),
   })
+  const [loading, setLoading] = useState(true)
 
   if(!fontsLoaded) {
       return null

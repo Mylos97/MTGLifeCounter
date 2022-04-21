@@ -12,7 +12,7 @@ const Btn = (props) => {
             >
             <View style={[styles.btn, {backgroundColor:props.color}, props.style]}>
                 <MyText 
-                style={{color:COLORS.colorSecondary, fontSize:17}}
+                style={{color:props.textColor,fontSize:15}}
                 text={props.title}
                 />
             </View>

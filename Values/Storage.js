@@ -5,16 +5,15 @@ export const storeData = async (value) => {
       const jsonValue = JSON.stringify(value)
       await AsyncStorage.setItem('@storage_Key', jsonValue)
     } catch (e) {
-      // saving error
+      console.log(e)
     }
 }
 
 export const getData = async () => {
     try {
       const jsonValue = await AsyncStorage.getItem('@storage_Key')
-      jsonValue.then((value) => console.log(value))
       return jsonValue != null ? JSON.parse(jsonValue) : null;
     } catch(e) {
-      // error reading value
+      console.log(e)
     }
 }
