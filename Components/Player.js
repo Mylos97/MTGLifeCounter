@@ -21,7 +21,7 @@ const calculateObject = (size, index) => {
 }
 
 const Player = (props) => {
-    const commanderSize = 46
+    const commanderSize = 50
     const rotations = ['0deg', '90deg', '180deg', '270deg']
     const [fontsize, setFontsize] = useState(props.fontsize)
     const [life, setLife] = useState(props.health)
@@ -183,7 +183,7 @@ const Player = (props) => {
     }
 
     return (
-        <View style={{backgroundColor:life > 0 ? theme ? theme.primary : COLORS.colorPrimary : COLORS.red, flex:1, justifyContent:'center', alignItems:'center'}}>
+        <View style={{backgroundColor: theme ? theme.primary : null, flex:1, justifyContent:'center', alignItems:'center'}}>
             <Modal
             animationType='fade'
             transparent={true}
@@ -194,45 +194,46 @@ const Player = (props) => {
                 }}
             ><View style={[{flex: 1}, ( showModal ) ? {backgroundColor:'rgba(0,0,0,0.3)'} : '']}>
                 <View style={[styles.modalView, {backgroundColor: theme ? theme.primary : null, 
-                flexDirection:'row', transform: [{rotate: calculateRotation(props.index)}]}]}>
-                    <View>
-                        <TouchableOpacity
-                        onPress={() => updateObject(false)}
-                        hitSlop={{left:20,right:20,top:20,bottom:20}}
-                        >
-                            <MyText 
-                                style={{fontSize:40, color: theme ? theme.secondary : COLORS.colorSecondary}}
-                                text='-'
+                flexDirection:'col', transform: [{rotate: calculateRotation(props.index)}]}]}>
+                    <View style={{flexDirection:'row', alignItems:'center'}}>
+                        <View>
+                            <TouchableOpacity
+                            onPress={() => updateObject(false)}
+                            hitSlop={{left:20,right:20,top:20,bottom:20}}
+                            >
+                                <MyText 
+                                    style={{fontSize:40, color: theme ? theme.secondary : COLORS.colorSecondary , width:16}}
+                                    text='-'
+                                />
+                            </TouchableOpacity>
+                        </View>
+                        <View style={{marginLeft:14, marginRight:14}}>
+                            <CommanderScreen 
+                                objects={commanderComponenet}
+                                index={props.index}
                             />
-                        </TouchableOpacity>
-                    </View>
-                    <View style={{textAlign:'center', marginLeft:20, marginRight:20, 
-                    alignItems:'center'}}>
-                    <View>
-                    <CommanderScreen 
-                        objects={commanderComponenet}
-                        index={props.index}
-                    />
-                    </View>
-                    <Btn 
-                    color={theme ? theme.tertiary : COLORS.colorTertiary}
-                    textColor={theme ? theme.secondary : COLORS.colorSecondary}
-                    onPress={() => {
-                        setShowModal(!showModal)}} 
-                    title="Close" />
-                    </View>
-                    <View>
+                        </View>
+                        <View>
                         <TouchableOpacity
                             onPress={() => updateObject(true)}
                             hitSlop={{left:20,right:20,top:20,bottom:20}}
                         >
                             <MyText 
-                                style={{fontSize:40, color: theme ? theme.secondary : COLORS.colorSecondary}}
+                                style={{fontSize:40, color: theme ? theme.secondary : COLORS.colorSecondary, width:16}}
                                 text='+'
                             />
                         </TouchableOpacity>
+                        </View>
                     </View>
-                </View>
+                    <View style={{ marginTop:20}}>
+                        <Btn 
+                        color={theme ? theme.tertiary : COLORS.colorTertiary}
+                        textColor={theme ? theme.secondary : COLORS.colorSecondary}
+                        onPress={() => {
+                            setShowModal(!showModal)}} 
+                        title="Close" />
+                    </View>
+                    </View>
                 </View>
             </Modal>
             <View style={{ flex:1, flexDirection:'column', alignItems:'center' , justifyContent:'center', transform: [{rotate: rotate ? rotate : "0deg"}]}}>
@@ -334,7 +335,6 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.5,
         shadowRadius: 12,
         elevation: 5,
-        flexDirection:'row',
         justifyContent:'center'
       },
   });

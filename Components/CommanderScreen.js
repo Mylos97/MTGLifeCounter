@@ -7,11 +7,11 @@ const margin = 6
 const CommanderScreen = (props) => {
     if (props.objects.length === 2 ) {
         return (
-            <View style={{marginBottom:40}}>
-                <View style={{margin:margin}}>
+            <View style={{flexDirection:'column'}}>
+                <View style={{margin:margin }}>
                     {props.objects[0]}
                 </View>
-                <View style={{margin:margin}}>
+                <View style={{margin:margin }}>
                     {props.objects[1]}
                 </View>
             </View>
@@ -20,7 +20,7 @@ const CommanderScreen = (props) => {
 
     if ( props.objects.length === 3 ) {
         return (
-            <View style={{ marginBottom: 40 }}>
+            <View style={{ flexDirection:'column' }}>
                 <View style={{margin:margin}}>
                     {props.objects[0]}
                 </View>
@@ -35,7 +35,7 @@ const CommanderScreen = (props) => {
     } 
     if (props.objects.length === 4) {
         return (
-            <View style={{flexDirection:'column', marginBottom: 10 }}>
+            <View style={{flexDirection:'column' }}>
                 <View style={{ flexDirection:'row' }}>
                     <View style={{margin:margin}}>
                         {props.objects[0]}
@@ -57,7 +57,7 @@ const CommanderScreen = (props) => {
     }
     if (props.objects.length === 5) {
         return (
-            <View style={{ flexDirection:'column', marginBottom: 10}}>
+            <View style={{ flexDirection:'column', }}>
                 <View style={{ flexDirection:'row' }}>
                     <View style={{margin:margin}}>
                     {props.objects[0]}
@@ -85,7 +85,7 @@ const CommanderScreen = (props) => {
     if (props.objects.length === 6) {
         if (props.index === 2 || props.index === 3) {
             return (
-                <View style={{ flexDirection:'column', marginBottom: 10, alignItems:'center' }}>
+                <View style={{ flexDirection:'column',  alignItems:'center' }}>
                     <View style={{ flexDirection:'row' }}>
                         <View style={{margin:margin}}>
                         {props.objects[0]}
@@ -112,7 +112,7 @@ const CommanderScreen = (props) => {
             )
         } else {
             return (
-                <View style={{ flexDirection:'column', marginBottom: 10, alignItems:'center' }}>
+                <View style={{ flexDirection:'column',  alignItems:'center' }}>
                     <View style={{flexDirection:'row' }}>
                         <View style={{margin:margin}}>
                         {props.objects[0]}

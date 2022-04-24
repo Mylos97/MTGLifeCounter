@@ -24,8 +24,8 @@ const styles = StyleSheet.create({
     btn:{
         alignItems:'center',
         margin:4,
-        padding:10,
-        borderRadius:4,
+        padding:12,
+        borderRadius:6,
     },
     btnHighlight: {
         flex:1,
