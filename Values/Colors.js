@@ -3,7 +3,7 @@ import { getData } from './Storage';
 var index = 0  
 const colors = {0:{primary:'rgb(59,24,95)', secondary:'rgb(254,194,96)', tertiary: 'rgb(42, 9, 68)'},
                 1:{primary:'rgb(249, 72, 146)', secondary:'rgb(251, 229, 229)', tertiary:'rgb(255, 161, 201)'},
-                2:{primary:'rgb(223, 223, 222)', secondary:'rgb(141, 141, 170)', tertiary:'rgb(247, 245, 242)'},
+                2:{primary:'rgb(224, 236, 228)', secondary:'rgb(121, 122, 126)', tertiary:'rgb(247, 242, 231)'},
                 3:{primary:'rgb(212, 64, 0)', secondary:'rgb(247, 233, 215)', tertiary:'rgb(255, 122, 0)'}}
 
 export const getColors = async () => {

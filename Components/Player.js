@@ -4,7 +4,7 @@ import { Feather } from '@expo/vector-icons';
 import { COLORS } from '../Values/Colors';
 import Btn from './Btn';
 import MyText from './MyText';
-
+import CommanderScreen from './CommanderScreen';
 
 const calculateObject = (size, index) => {
     const obj = []
@@ -12,74 +12,13 @@ const calculateObject = (size, index) => {
                   3:{0:[false,false, true], 1: [false, true, false], 2:[false,false,true]},
                   4:{0:[false,false,false, true],1:[false,false,true,false], 2:[false,false,true,false],3:[false,false,false, true]},
                   5:{0:[false,false,false, false,true],1:[false,false,false,true, false], 2:[false,false,false,true,false],3:[false,false,false,false,true],4:[false,false,true,false,false]},
-                  6:[false,false,false,false,false,false]}
+                  6:{0:[false,false,false, false,false,true],1:[false,false,false,false,true,false], 
+                     2:[false,false,false,false,true,false],3:[false,false,false,false,true,false],4:[false,false,false,false,true,false],5:[false,false,false,false,false,true]}}
     for(let i = 0 ; i < size ; i++) {
         obj.push({damage: 0 , selected : false, self: self[size][index][i]})
     }
     return obj
 }
-
-const CommanderScreen = (props) => {
-    if ( props.objects.length <= 3 ) {
-        return (
-            <View style={{flex:1, marginBottom: 10 }}>
-                {props.objects}
-            </View>
-        )
-    } 
-    if (props.objects.length === 4) {
-        return (
-            <View style={{flex:1, flexDirection:'column', marginBottom: 10 }}>
-                <View style={{flex: 1, flexDirection:'row' }}>
-                {props.objects[0]}
-                {props.objects[1]}
-                </View>
-                <View style={{flex:1, flexDirection:'row'}}>
-                {props.objects[2]}
-                {props.objects[3]}
-                </View>
-            </View>
-        )
-    }
-    if (props.objects.length === 5) {
-        return (
-            <View style={{flex:1, flexDirection:'column', marginBottom: 10, alignItems:'center' }}>
-                <View style={{flex: 1, flexDirection:'row' }}>
-                {props.objects[0]}
-                {props.objects[1]}
-                </View>
-                <View style={{flex:1, flexDirection:'row'}}>
-                {props.objects[2]}
-                </View>
-                <View style={{flex:1, flexDirection:'row'}}>
-                {props.objects[3]}
-                {props.objects[4]}
-                </View>
-            </View>
-        )
-    }
-    if (props.objects.length === 6) {
-        return (
-            <View style={{flex:1, flexDirection:'column', marginBottom: 10, alignItems:'center' }}>
-                <View style={{flex: 1, flexDirection:'row' }}>
-                {props.objects[0]}
-                {props.objects[1]}
-                </View>
-                <View style={{flex:1, flexDirection:'row'}}>
-                {props.objects[2]}
-                {props.objects[3]}
-                </View>
-                <View style={{flex:1, flexDirection:'row'}}>
-                {props.objects[4]}
-                {props.objects[5]}
-                </View>
-            </View>
-        )
-    }
-
-}
-
-
 
 const Player = (props) => {
     const commanderSize = 46
@@ -88,41 +27,15 @@ const Player = (props) => {
     const [life, setLife] = useState(props.health)
     const [rotate, setRotate] = useState(props.rotation)
     const [mode, setMode] = useState(props.mode)
-    const [name, setName] = useState('')
+    //const [name, setName] = useState('')
     const [rotateIndex, setRotationIndex] = useState(rotations.indexOf(props.rotation) + 1)
     const [longPressPositive, setLongPressPositive] = useState(null)
     const [longPressNegative, setLongPressNegative] = useState(null)
-    const [commanderDamage, setCommanderDamage] = useState(0)
-    const [showCommanderDamage, setShowCommanderDamage] = useState(false)
     const [commanderObject, setCommanderObject] = useState(null)
     const [commanderComponenet, setCommanderComponenent] = useState(null)
     const [theme, setTheme] = useState(props.theme)
     const [showModal, setShowModal] = useState(false)
     const tick = 180
-
-    const updateCommanderComponent = () => {
-        if(commanderObject) {
-            setCommanderComponenent(commanderObject.map((obj, i) => {
-                return (
-                <SquareCommander 
-                    key={i}
-                    index={i}
-                    self={obj.self}
-                    damage={obj.damage}
-                    selected={obj.selected}
-                    theme={theme}
-                />)}))
-        }
-    }
-
-    useEffect(() => {
-        setLife(props.health)
-        setRotationIndex(rotations.indexOf(props.rotation) + 1)
-        if(props.mode === 'Standard') {
-            setShowCommanderDamage(false)
-        }
-
-    }, [props.rotation, props.health, props.fontsize])
     
     useEffect(() => {
         setFontsize(props.fontsize)
@@ -140,6 +53,11 @@ const Player = (props) => {
     useEffect(() => {
         setTheme(props.theme)
     },[props.theme])
+
+    useEffect(() => {
+        setLife(props.health)
+        setRotationIndex(rotations.indexOf(props.rotation) + 1)
+    },[props.rotation, props.health, props.fontsize])
 
     useEffect(() => {
         if(longPressNegative !== null) {
@@ -169,6 +87,21 @@ const Player = (props) => {
         }   
     },[longPressPositive])
 
+    const updateCommanderComponent = () => {
+        if(commanderObject) {
+            setCommanderComponenent(commanderObject.map((obj, i) => {
+                return (
+                <SquareCommander 
+                    key={i}
+                    index={i}
+                    self={obj.self}
+                    damage={obj.damage}
+                    selected={obj.selected}
+                    theme={theme}
+                />)}))
+        }
+    }
+
     const selectObject = (index) => {
         const temp = [...commanderObject]
         temp.map((obj, i) => {
@@ -195,7 +128,6 @@ const Player = (props) => {
                         setLife(life => life + 1)
                     }
                 }
-                
             }
             return obj
         })
@@ -209,11 +141,10 @@ const Player = (props) => {
             > 
             <View 
             style={{backgroundColor:props.theme ? props.theme.tertiary : 'red', width:commanderSize, 
-            height: commanderSize, justifyContent:'center', alignContent:'center', 
-            margin:6, 
-            borderRadius:4, borderColor:props.selected ? props.theme.secondary : null, borderWidth: props.selected ? 3 : 0}}>
+            height: commanderSize, justifyContent:'center', alignContent:'center',
+            borderRadius:6, borderColor:props.selected ? props.theme.secondary : null, borderWidth: props.selected ? 2 : 0}}>
             <MyText 
-                style={{color: props.theme ? props.theme.secondary : null}}
+                style={{color: props.theme ? props.theme.secondary : null, textAlign:'center', fontSize:20}}
                 text={props.self ? '' : props.damage}
             />
             </View>
@@ -251,21 +182,23 @@ const Player = (props) => {
         }
     }
 
-    calculateRotation()
-
     return (
         <View style={{backgroundColor:life > 0 ? theme ? theme.primary : COLORS.colorPrimary : COLORS.red, flex:1, justifyContent:'center', alignItems:'center'}}>
             <Modal
             animationType='fade'
             transparent={true}
             visible={showModal}
-            onRequestClose={() => setShowModal(!showModal)}
-            >
+            onRequestClose={() => {
+                setShowModal(!showModal)
+                props.modalShown(false)
+                }}
+            ><View style={[{flex: 1}, ( showModal ) ? {backgroundColor:'rgba(0,0,0,0.3)'} : '']}>
                 <View style={[styles.modalView, {backgroundColor: theme ? theme.primary : null, 
                 flexDirection:'row', transform: [{rotate: calculateRotation(props.index)}]}]}>
                     <View>
                         <TouchableOpacity
                         onPress={() => updateObject(false)}
+                        hitSlop={{left:20,right:20,top:20,bottom:20}}
                         >
                             <MyText 
                                 style={{fontSize:40, color: theme ? theme.secondary : COLORS.colorSecondary}}
@@ -275,18 +208,23 @@ const Player = (props) => {
                     </View>
                     <View style={{textAlign:'center', marginLeft:20, marginRight:20, 
                     alignItems:'center'}}>
+                    <View>
                     <CommanderScreen 
                         objects={commanderComponenet}
+                        index={props.index}
                     />
+                    </View>
                     <Btn 
                     color={theme ? theme.tertiary : COLORS.colorTertiary}
                     textColor={theme ? theme.secondary : COLORS.colorSecondary}
-                    onPress={() => setShowModal(!showModal)} 
+                    onPress={() => {
+                        setShowModal(!showModal)}} 
                     title="Close" />
                     </View>
                     <View>
                         <TouchableOpacity
                             onPress={() => updateObject(true)}
+                            hitSlop={{left:20,right:20,top:20,bottom:20}}
                         >
                             <MyText 
                                 style={{fontSize:40, color: theme ? theme.secondary : COLORS.colorSecondary}}
@@ -295,6 +233,7 @@ const Player = (props) => {
                         </TouchableOpacity>
                     </View>
                 </View>
+                </View>
             </Modal>
             <View style={{ flex:1, flexDirection:'column', alignItems:'center' , justifyContent:'center', transform: [{rotate: rotate ? rotate : "0deg"}]}}>
                 <View style={{flexDirection:'row'}}>
@@ -302,7 +241,7 @@ const Player = (props) => {
                 onPress={() => {
                     setLife(life => life - 1)
                 }} 
-                style={{flex:1, justifyContent:'center', width:fontsize/2, alignItems:'center'}}
+                style={{ justifyContent:'center', alignItems:'center'}}
                 onLongPress={() => {
                     setLongPressNegative(true)}}
                 onPressOut={() =>{ 
@@ -323,11 +262,8 @@ const Player = (props) => {
                 <View>
                 <MyText 
                 style={{fontSize:fontsize, color: theme ? theme.secondary : COLORS.colorSecondary, 
-                marginLeft:fontsize/10, marginRight:fontsize/10}}
+                marginLeft:24, marginRight:24}}
                 text={life}
-                />
-                <MyText 
-                    text={props.index}
                 />
                 </View>
                 </TouchableWithoutFeedback>
@@ -335,7 +271,7 @@ const Player = (props) => {
                 onPress={() => {
                     setLife(life => life + 1)
                 }} 
-                style={{ flex:1, justifyContent:'center', width:fontsize/2, alignItems:'center'}}
+                style={{  justifyContent:'center',  alignItems:'center'}}
                 onLongPress={() => setLongPressPositive(true)}
                 onPressOut={() => setLongPressPositive(false)}
                 >
@@ -346,16 +282,6 @@ const Player = (props) => {
                 </TouchableOpacity>
                 </View>
                 <View style={{ flexDirection:'column', alignItems:'center'}}>
-                <TextInput
-                    style={{height:fontsize/3, fontSize:fontsize/5, 
-                    textAlign:'center', color: theme ? theme.secondary : COLORS.colorSecondary, 
-                    marginBottom:12, fontFamily:'BebasNeue-Regular',
-                    opacity:name === '' ? 0.5 : 1, borderWidth:0}} 
-                    value={name}
-                    onChangeText={setName}
-                    placeholder='Name'
-                    placeholderTextColor={theme ? theme.secondary : COLORS.colorSecondary}
-                />
                 <TouchableOpacity
                 onPress={() => {
                     setRotationIndex((rotateIndex + 1) % rotations.length)
@@ -365,12 +291,10 @@ const Player = (props) => {
                 >
                 <Feather 
                     name="rotate-cw" 
-                    size={fontsize/3} 
+                    size={fontsize === 100 ? 28 : 24} 
                     color={theme ? theme.secondary : COLORS.colorSecondary} 
                 />
                 </TouchableOpacity>
-                <View style={{backgroundColor:'red', height:40, flexDirection:'row'}}>
-                </View>
                 </View>
             </View>
         </View>
@@ -395,9 +319,9 @@ const styles = StyleSheet.create({
     }, 
     modalView: {
         flex:1,
-        margin: 20,
-        marginTop: 300,
-        marginBottom:300,
+        margin: 25,
+        marginTop: 250,
+        marginBottom:250,
         backgroundColor: COLORS.colorPrimary,
         borderRadius: 10,
         padding: 35,
@@ -414,5 +338,21 @@ const styles = StyleSheet.create({
         justifyContent:'center'
       },
   });
+
+/*
+<TextInput
+                    style={{height:fontsize/3, fontSize:fontsize/5, 
+                    textAlign:'center', color: theme ? theme.secondary : COLORS.colorSecondary, 
+                    marginBottom:12, fontFamily:'BebasNeue-Regular',
+                    opacity:name === '' ? 0.5 : 1, borderWidth:0}} 
+                    value={name}
+                    onChangeText={setName}
+                    placeholder='Name'
+                    placeholderTextColor={theme ? theme.secondary : COLORS.colorSecondary}
+                />
+
+*/
+
+
 
 export default Player
