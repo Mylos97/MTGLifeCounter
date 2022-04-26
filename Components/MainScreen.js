@@ -18,10 +18,10 @@ const generateID = () => {
 
 const MainScreen = () => {
   const fontSizes = {2:100,3:100,4:90,5:80,6:80}
-  const themes = ['purple', 'pink', 'grey']
+  const themes = ['white', 'purple', 'pink', 'grey']
   const [showBar, setShowBar] = useState(false)
   const [playerHealth, setPlayerHealth] = useState(20)
-  const [mode, setMode] = useState('Commander')
+  const [mode, setMode] = useState('Standard')
   const [themeIndex, setThemeIndex] = useState(null)
   const [loading, setLoading] = useState(true)
   const [theme, setTheme] = useState(getTheme())
