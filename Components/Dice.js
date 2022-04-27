@@ -7,14 +7,11 @@ const randomInteger = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-
 const Dice = (props) => {
-    const size = 80
     const dices = [6,12,20]
     const [number, setNumber] = useState(6)
     const [rolling, setRolling] = useState(false)
     const times = useRef(0)
-
     useEffect(() => {
         setNumber(dices[props.selectedDice])
     },[props.selectedDice])
@@ -48,10 +45,10 @@ const Dice = (props) => {
             if(!rolling) props.setSelectedDice(selectedDice => (selectedDice + 1) % dices.length)}
         }
         >   
-            <View style={{width:size, height:size, backgroundColor:props.theme ? props.theme.tertiary : '',borderRadius:12, alignItems:'center', justifyContent:'center'}}>
+            <View style={{width:props.size, height:props.size, backgroundColor:props.theme ? props.theme.tertiary : '',borderRadius:12, alignItems:'center', justifyContent:'center'}}>
                 <MyText 
                     text={number}
-                    style={{color:props.theme ? props.theme.secondary : '', fontSize:38}}
+                    style={{color:props.theme ? props.theme.secondary : '', fontSize:props.size/2}}
                 />
             </View>
         </TouchableOpacity>

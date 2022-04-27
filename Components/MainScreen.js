@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View, Modal, KeyboardAvoidingView, Platform, Keyboard } from 'react-native';
+import { StyleSheet, View, Modal, KeyboardAvoidingView, Platform, Keyboard, Dimensions } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native-web';
 import { getData, storeData } from '../Values/Storage';
 import React, { useState, useEffect, useRef } from 'react'
@@ -16,8 +16,34 @@ const generateID = () => {
   return r
 }
 
+const getWidth = (size) => {
+  const { width } = Dimensions.get("window")
+  if ( width < 450 ) {
+    return size
+  }
+  if ( width > 450  && width < 650) {
+    return ( size * 1.2 )
+  }
+  if (width > 650) {
+    return ( size * 1.5)
+  }
+}
+
+const fontSize = (size) => {  
+  const { width } = Dimensions.get("window")
+  if ( width < 450 ) {
+    return size
+  }
+  if ( width > 450  && width < 650) {
+    return ( size * 1.2 )
+  }
+  if (width > 650) {
+    return ( size * 1.5)
+  }
+} 
+
 const MainScreen = () => {
-  const fontSizes = {2:100,3:100,4:90,5:80,6:80}
+  const fontSizes = {2:fontSize(100),3:fontSize(100),4:fontSize(90),5:fontSize(80),6:fontSize(80)}
   const themes = ['white', 'purple', 'pink', 'grey']
   const [showBar, setShowBar] = useState(false)
   const [playerHealth, setPlayerHealth] = useState(20)
@@ -264,26 +290,29 @@ const MainScreen = () => {
               <View style={styles.addBtns}>
                 <View>
                 <MyText 
-                style={{color:theme ? theme.secondary : COLORS.colorSecondary, fontSize:18, textAlign:'center'}}
+                style={{color:theme ? theme.secondary : COLORS.colorSecondary, fontSize:fontSize(18), textAlign:'center'}}
                 text='Players'
                 />
                   <Btn 
                   color={theme ? theme.tertiary : COLORS.colorTertiary}
                   textColor={theme ? theme.secondary : COLORS.colorSecondary}
-                  onPress={() => addPlayer()} 
-                  title="Add player" />
+                  onPress={() => addPlayer()}
+                  title="Add player" 
+                  style={{width:getWidth(100), marginBottom:8}}  
+                  />
                 </View>
                 <View>
                 <Btn 
                 color={theme ? theme.tertiary : COLORS.colorTertiary}
                 textColor={theme ? theme.secondary : COLORS.colorSecondary}
                 onPress={() => removePlayer()} 
+                style={{width:getWidth(100)}}  
                 title="Remove player"/>
                 </View>
               </View>
-              <View style={{ marginRight:8}}>
+              <View style={{marginLeft:8,marginRight:8, alignItems:'center'}}>
                 <MyText 
-                style={{color:theme ? theme.secondary : COLORS.colorSecondary, fontSize:18}}
+                style={{color:theme ? theme.secondary : COLORS.colorSecondary, fontSize:fontSize(18)}}
                 text='Life total'
                 />
                 <View>
@@ -293,12 +322,13 @@ const MainScreen = () => {
                 title={playerHealth}
                 color={theme ? theme.tertiary : COLORS.colorTertiary}
                 textColor={theme ? theme.secondary : COLORS.colorSecondary}
+                style={{width:getWidth(60)}}  
                 />
               </View>
-              <View style={{alignItems:'center', marginLeft:8}}>
+              <View style={{alignItems:'center'}}>
                 <MyText 
                   text='Game mode'
-                  style={{color:theme ? theme.secondary : COLORS.colorSecondary, fontSize:18}}
+                  style={{color:theme ? theme.secondary : COLORS.colorSecondary, fontSize:fontSize(18)}}
                 />
                 <Btn 
                   onPress={() => {
@@ -307,10 +337,10 @@ const MainScreen = () => {
                   title={mode}
                   color={theme ? theme.tertiary : COLORS.colorTertiary}
                   textColor={theme ? theme.secondary : COLORS.colorSecondary}
-                  style={{width:88}}
+                  style={{width:getWidth(100), marginBottom:8}}
                 />
                 <Btn
-                  style={{width:88}}
+                  style={{width:getWidth(100)}}
                   color={theme ? theme.tertiary : COLORS.colorTertiary}
                   textColor={theme ? theme.secondary : COLORS.colorSecondary}
                   onPress={() => {
@@ -324,6 +354,7 @@ const MainScreen = () => {
                 theme={theme}
                 selectedDice={selectedDice}
                 setSelectedDice={setSelectedDice}
+                size={getWidth(60)}
               />
                 <View style={{marginTop:32}}>
                 <Btn 
@@ -331,6 +362,7 @@ const MainScreen = () => {
                 title={'close'}
                 color={theme ? theme.tertiary : COLORS.colorTertiary}
                 textColor={theme ? theme.secondary : COLORS.colorSecondary}
+                style={{width:getWidth(60)}}
                 />
                 </View>
           </View>
@@ -378,7 +410,6 @@ const styles = StyleSheet.create({
     },
     addBtns: {
       flexDirection:'column',
-      marginRight:12,
     }
   });
 

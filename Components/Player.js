@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, TextInput, View, TouchableOpacity, TouchableWithoutFeedback, Modal} from "react-native";
+import { StyleSheet, TextInput, View, TouchableOpacity, TouchableWithoutFeedback, Modal, Dimensions} from "react-native";
 import { Feather } from '@expo/vector-icons'; 
 import { COLORS } from '../Values/Colors';
 import Btn from './Btn';
@@ -20,8 +20,40 @@ const calculateObject = (size, index) => {
     return obj
 }
 
+const getCommanderSize = () => {
+    const {width, height} = Dimensions.get("window")
+    if (width < 400) {
+        return 50
+    }
+    if ( width > 400 && width < 500) {
+        return 60
+    } 
+    if ( width > 500 && width < 600) {
+        return 70
+    } 
+    if ( width > 600) {
+        return 75
+    }
+}
+
+const getFontSize = () => {
+    const {width, height} = Dimensions.get("window")
+    if (width < 400) {
+        return 40
+    }
+    if ( width > 400 && width < 500) {
+        return 50
+    } 
+    if ( width > 500 && width < 600) {
+        return 60
+    } 
+    if ( width > 600) {
+        return 70
+    }
+}
+
 const Player = (props) => {
-    const commanderSize = 50
+    const commanderSize = getCommanderSize()
     const rotations = ['0deg', '90deg', '180deg', '270deg']
     const [fontsize, setFontsize] = useState(props.fontsize)
     const [life, setLife] = useState(props.health)
@@ -202,12 +234,12 @@ const Player = (props) => {
                             hitSlop={{left:20,right:20,top:20,bottom:20}}
                             >
                                 <MyText 
-                                    style={{fontSize:40, color: theme ? theme.secondary : COLORS.colorSecondary , width:16}}
+                                    style={{fontSize:getFontSize(), color: theme ? theme.secondary : COLORS.colorSecondary , width:16}}
                                     text='-'
                                 />
                             </TouchableOpacity>
                         </View>
-                        <View style={{marginLeft:14, marginRight:14}}>
+                        <View style={{marginLeft:14*(getFontSize()/40), marginRight:14*(getFontSize()/40)}}>
                             <CommanderScreen 
                                 objects={commanderComponenet}
                                 index={props.index}
@@ -219,7 +251,7 @@ const Player = (props) => {
                             hitSlop={{left:20,right:20,top:20,bottom:20}}
                         >
                             <MyText 
-                                style={{fontSize:40, color: theme ? theme.secondary : COLORS.colorSecondary, width:16}}
+                                style={{fontSize:getFontSize(), color: theme ? theme.secondary : COLORS.colorSecondary, width:16}}
                                 text='+'
                             />
                         </TouchableOpacity>
@@ -292,7 +324,7 @@ const Player = (props) => {
                 >
                 <Feather 
                     name="rotate-cw" 
-                    size={fontsize === 100 ? 28 : 24} 
+                    size={fontsize/4} 
                     color={theme ? theme.secondary : COLORS.colorSecondary} 
                 />
                 </TouchableOpacity>

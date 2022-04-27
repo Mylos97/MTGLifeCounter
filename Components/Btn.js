@@ -1,7 +1,18 @@
-import { Pressable, StyleSheet, View, Text  } from 'react-native';
+import { Pressable, StyleSheet, View, Text, Dimensions  } from 'react-native';
 import  MyText from './MyText'
 import { COLORS } from "../Values/Colors";
 
+
+const fontSize = () => {
+    const {width, height} = Dimensions.get("window");
+    if ( width < 500 ) {
+        return 15
+    }
+    if ( width > 500 ) {
+        return 20
+    }
+
+}
 
 const Btn = (props) => {
     return (
@@ -12,7 +23,7 @@ const Btn = (props) => {
             >
             <View style={[styles.btn, {backgroundColor:props.color}, props.style]}>
                 <MyText 
-                style={{color:props.textColor,fontSize:15}}
+                style={{color:props.textColor,fontSize:fontSize(), textAlign:'center'}}
                 text={props.title}
                 />
             </View>
@@ -23,7 +34,6 @@ const Btn = (props) => {
 const styles = StyleSheet.create({
     btn:{
         alignItems:'center',
-        margin:4,
         padding:12,
         borderRadius:6,
     },
