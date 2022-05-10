@@ -1,5 +1,5 @@
 import React,{ useState, useEffect, useRef } from 'react'
-import { StyleSheet, TextInput, View, TouchableOpacity, TouchableWithoutFeedback, Modal} from "react-native";
+import { View, TouchableOpacity } from "react-native";
 import MyText from './MyText';
 
 
@@ -16,6 +16,7 @@ const Dice = (props) => {
         setNumber(dices[props.selectedDice])
     },[props.selectedDice])
 
+    // Determines how many roles and how long between each one 
     useEffect(() => {
         if(rolling !== false) {
             let timeOut = []
@@ -45,7 +46,8 @@ const Dice = (props) => {
             if(!rolling) props.setSelectedDice(selectedDice => (selectedDice + 1) % dices.length)}
         }
         >   
-            <View style={{width:props.size, height:props.size, backgroundColor:props.theme ? props.theme.tertiary : '',borderRadius:12, alignItems:'center', justifyContent:'center'}}>
+            <View style={{width:props.size, height:props.size, backgroundColor:props.theme ? props.theme.tertiary : '',
+            borderRadius:10, alignItems:'center', justifyContent:'center'}}>
                 <MyText 
                     text={number}
                     style={{color:props.theme ? props.theme.secondary : '', fontSize:props.size/2}}

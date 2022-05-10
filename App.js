@@ -1,16 +1,16 @@
 import { registerRootComponent } from 'expo';
 import { useFonts } from 'expo-font';
-import React, { useState } from 'react'
+import React from 'react'
 import MainScreen from './Components/MainScreen';
+import AppLoading from 'expo-app-loading'
 
 export default function App() {
   const [fontsLoaded] = useFonts({
     'BebasNeue-Regular': require('./assets/BebasNeue-Regular.ttf'),
   })
-  const [loading, setLoading] = useState(true)
 
   if(!fontsLoaded) {
-      return null
+      return <AppLoading />
   }
 
   return (

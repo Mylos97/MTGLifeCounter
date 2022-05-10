@@ -1,6 +1,5 @@
 import { Pressable, StyleSheet, View, Text, Dimensions  } from 'react-native';
 import  MyText from './MyText'
-import { COLORS } from "../Values/Colors";
 
 
 const fontSize = () => {

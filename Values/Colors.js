@@ -1,5 +1,6 @@
 import { getData } from './Storage';
 
+// Controls the theme throughout the app 
 var index = 0  
 const colors = {
                 0:{primary:'rgb(255,255,255)', secondary:'rgb(66,155,255)', tertiary: 'rgb(190, 230, 255)'},

@@ -4,6 +4,7 @@ import { View} from "react-native";
 
 const margin = 6
 
+// The commander screen for the different amount of players 2 to 6
 const CommanderScreen = (props) => {
     if (props.objects.length === 2 ) {
         return (

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, TextInput, View, TouchableOpacity, TouchableWithoutFeedback, Modal, Dimensions} from "react-native";
+import { StyleSheet, View, TouchableOpacity, TouchableWithoutFeedback, Modal, Dimensions} from "react-native";
 import { Feather } from '@expo/vector-icons'; 
 import { COLORS } from '../Values/Colors';
 import Btn from './Btn';
 import MyText from './MyText';
 import CommanderScreen from './CommanderScreen';
 
+
+// This determines the commander square which cant be selected, could probably be done in a smarter way :=)
 const calculateObject = (size, index) => {
     const obj = []
     const self = {2:{0:[false, true], 1:[false,true]},
@@ -20,6 +22,7 @@ const calculateObject = (size, index) => {
     return obj
 }
 
+// Scaling functions
 const getCommanderSize = () => {
     const {width, height} = Dimensions.get("window")
     if (width < 400) {
@@ -36,6 +39,7 @@ const getCommanderSize = () => {
     }
 }
 
+// Scaling functions
 const getFontSize = () => {
     const {width, height} = Dimensions.get("window")
     if (width < 400) {
@@ -57,9 +61,12 @@ const Player = (props) => {
     const rotations = ['0deg', '90deg', '180deg', '270deg']
     const [fontsize, setFontsize] = useState(props.fontsize)
     const [life, setLife] = useState(props.health)
+    const [tempLife, setTempLife] = useState(0)
+    const [isActive, setIsActive] = useState(0)
+    const [timerActive, setTimerActive] = useState(false)
     const [rotate, setRotate] = useState(props.rotation)
     const [mode, setMode] = useState(props.mode)
-    //const [name, setName] = useState('')
+    //const [name, setName] = useState('') can easily be implemented but im not sure if i want it
     const [rotateIndex, setRotationIndex] = useState(rotations.indexOf(props.rotation) + 1)
     const [longPressPositive, setLongPressPositive] = useState(null)
     const [longPressNegative, setLongPressNegative] = useState(null)
@@ -71,7 +78,21 @@ const Player = (props) => {
     
     useEffect(() => {
         setFontsize(props.fontsize)
-    },[props.fontsize])
+    }, [props.fontsize])
+
+
+    // Temporary life counter to easily show the user how much the current life has changed resets after an interval 
+    useEffect(() => { 
+        if (timerActive) {
+            const timer = isActive > 0 && setInterval(() => setIsActive(isActive - 1), 100);
+            if (isActive === 0) {
+                setTempLife(0)
+                setTimerActive(false)
+          }
+          return () => clearInterval(timer);
+        } 
+    },[isActive, timerActive])
+
 
     useEffect(() => {
         setMode(props.mode)
@@ -91,6 +112,7 @@ const Player = (props) => {
         setRotationIndex(rotations.indexOf(props.rotation) + 1)
     },[props.rotation, props.health, props.fontsize])
 
+    // Life changing at a constant speed same for positive and negative could also be made smarter
     useEffect(() => {
         if(longPressNegative !== null) {
             let interval = setInterval(() => {
@@ -105,6 +127,7 @@ const Player = (props) => {
         }   
     },[longPressNegative])
 
+    // Life changing at a constant speed same for positive and negative could also be made smarter
     useEffect(() => {
         if(longPressPositive !== null) {
             let interval = setInterval(() => {
@@ -146,6 +169,7 @@ const Player = (props) => {
         setCommanderObject(temp)
     }
 
+    // Updates the state of the changed commander square
     const updateObject = (positive) => {
         const temp = [...commanderObject]
         temp.map((obj) => {
@@ -165,25 +189,28 @@ const Player = (props) => {
         })
         setCommanderObject(temp)
     } 
-    
+
+    // A square on the commander popup 
     const SquareCommander = (props) => {
         return (
             <TouchableOpacity
             onPress={() => selectObject(props.index)}
+            disabled={props.self || props.selected}
             > 
-            <View 
-            style={{backgroundColor:props.theme ? props.theme.tertiary : 'red', width:commanderSize, 
-            height: commanderSize, justifyContent:'center', alignContent:'center',
-            borderRadius:6, borderColor:props.selected ? props.theme.secondary : null, borderWidth: props.selected ? 2 : 0}}>
-            <MyText 
-                style={{color: props.theme ? props.theme.secondary : null, textAlign:'center', fontSize:20}}
-                text={props.self ? '' : props.damage}
-            />
-            </View>
+                <View 
+                style={{backgroundColor:props.theme ? props.theme.tertiary : 'red', width:commanderSize, 
+                height: commanderSize, justifyContent:'center', alignContent:'center',
+                borderRadius:6, borderColor:props.selected ? props.theme.secondary : null, borderWidth: props.selected ? 2 : 0}}>
+                <MyText 
+                    style={{color: props.theme ? props.theme.secondary : null, textAlign:'center', fontSize:20}}
+                    text={props.self ? '' : props.damage}
+                />
+                </View>
             </TouchableOpacity>
         )
     }
 
+    // Calculates the rotation of commandersquare based on the index 
     const calculateRotation = (index) => {
         if ( commanderObject ) {
             if (commanderObject.length === 2 || commanderObject.length === 3) {
@@ -213,7 +240,6 @@ const Player = (props) => {
             }
         }
     }
-
     return (
         <View style={{backgroundColor: theme ? theme.primary : null, flex:1, justifyContent:'center', alignItems:'center'}}>
             <Modal
@@ -222,7 +248,6 @@ const Player = (props) => {
             visible={showModal}
             onRequestClose={() => {
                 setShowModal(!showModal)
-                props.modalShown(false)
                 }}
             ><View style={[{flex: 1}, ( showModal ) ? {backgroundColor:'rgba(0,0,0,0.3)'} : '']}>
                 <View style={[styles.modalView, {backgroundColor: theme ? theme.primary : null, 
@@ -273,6 +298,11 @@ const Player = (props) => {
                 <TouchableOpacity 
                 onPress={() => {
                     setLife(life => life - 1)
+                    setTempLife(life => life - 1)
+                    setTimerActive(true)
+                    if (isActive < 20) {
+                        setIsActive(30)
+                    }
                 }} 
                 style={{ justifyContent:'center', alignItems:'center'}}
                 onLongPress={() => {
@@ -292,7 +322,13 @@ const Player = (props) => {
                     }
                 }}
                 >
-                <View>
+                <View style={{flexDirection:'column'}}>
+                <MyText
+                style={{fontSize:fontsize/5, color: theme ? tempLife === 0 ? theme.primary : theme.secondary : COLORS.colorSecondary
+                , textAlign:'center'}}
+                text={tempLife}
+                >                   
+                </MyText>
                 <MyText 
                 style={{fontSize:fontsize, color: theme ? theme.secondary : COLORS.colorSecondary, 
                 marginLeft:24, marginRight:24}}
@@ -303,6 +339,11 @@ const Player = (props) => {
                 <TouchableOpacity 
                 onPress={() => {
                     setLife(life => life + 1)
+                    setTempLife(life => life + 1)
+                    setTimerActive(true)
+                    if (isActive < 20) {
+                        setIsActive(30)
+                    }
                 }} 
                 style={{  justifyContent:'center',  alignItems:'center'}}
                 onLongPress={() => setLongPressPositive(true)}
@@ -371,8 +412,8 @@ const styles = StyleSheet.create({
       },
   });
 
-/*
-<TextInput
+/* If i ever want to add the name again
+<TextInput 
                     style={{height:fontsize/3, fontSize:fontsize/5, 
                     textAlign:'center', color: theme ? theme.secondary : COLORS.colorSecondary, 
                     marginBottom:12, fontFamily:'BebasNeue-Regular',
@@ -384,7 +425,5 @@ const styles = StyleSheet.create({
                 />
 
 */
-
-
 
 export default Player

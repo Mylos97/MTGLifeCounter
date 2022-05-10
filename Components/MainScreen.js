@@ -12,10 +12,11 @@ import PlayerScreen from './PlayerScreen';
 import Dice from './Dice';
 
 const generateID = () => {
-  const r = (Math.random() + 1).toString(36).substring(7)
+  const r = (Math.random() + 1).toString(36).substring(2)
   return r
 }
 
+// Scaling function to fit more devices 
 const getWidth = (size) => {
   const { width } = Dimensions.get("window")
   if ( width < 450 ) {
@@ -29,6 +30,7 @@ const getWidth = (size) => {
   }
 }
 
+// Scaling function to fit more devices 
 const fontSize = (size) => {  
   const { width } = Dimensions.get("window")
   if ( width < 450 ) {
@@ -55,8 +57,9 @@ const MainScreen = () => {
   const [selectedDice, setSelectedDice] = useState(0)
   const [playersID, setPlayersID] = useState({players: [{id:generateID(), rotation:"180deg", health:20, fontsize:fontSizes[2], mode:mode, theme:theme, size:2},
     {id:generateID(), rotation:"0deg", health:20, fontsize:fontSizes[2], mode:mode, theme:theme, size:2}]})
-    
-  useEffect(async () => {
+  
+  // To load theme etc  
+  useEffect(async () => {   
     let isMounted = true
     try {
       if(isMounted) setLoading(true)
@@ -83,7 +86,6 @@ const MainScreen = () => {
     mode={player.mode}  
     theme={theme}
     size={playersID.players.length}
-    modalShown={player.modalShown}
     />)))
   }
 
@@ -106,6 +108,7 @@ const MainScreen = () => {
     })
   },[themeIndex])
 
+  // Updates health on all players from 20 | 30 | 40
   const updatePlayerHealth = () => {
     const tmpPlayers = {...playersID}
     if (playerHealth + 10 > 40) {
@@ -135,6 +138,7 @@ const MainScreen = () => {
     updatePlayers()
   }
 
+  // Adds a players and sets the rotation of that player
   const addPlayer = () => {
     if(playersID.players.length < 6) {
       const tmpPlayers = {...playersID}
@@ -193,6 +197,7 @@ const MainScreen = () => {
     } 
   }
 
+  // Removes a players and set the correct rotation of the rest
   const removePlayer = () => {
     if(playersID.players.length > 2) {
       const tmpPlayers = {...playersID}
