@@ -247,9 +247,8 @@ const Player = (props) => {
             transparent={true}
             visible={showModal}
             onRequestClose={() => {
-                setShowModal(prev => !prev)
+                setShowModal(!showModal)
                 }}
-            onPress={(e) => e.preventDefault()}
             ><View style={[{flex: 1}, ( showModal ) ? {backgroundColor:'rgba(0,0,0,0.3)'} : '']}>
                 <View style={[styles.modalView, {backgroundColor: theme ? theme.primary : null, 
                 flexDirection:'col', transform: [{rotate: calculateRotation(props.index)}]}]}>

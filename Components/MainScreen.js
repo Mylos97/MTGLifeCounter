@@ -285,7 +285,7 @@ const MainScreen = () => {
         transparent={true}
         visible={showBar}
         onRequestClose={() => {
-          setShowBar(prev => !prev)
+          setShowBar(prev => !prev);
         }}
         onPress={(e) => e.preventDefault()}
       >
