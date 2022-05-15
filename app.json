@@ -24,7 +24,7 @@
         "foregroundImage": "./assets/splash_android.png",
         "backgroundColor": "#FFFFFF"
       },
-      "versionCode": 2,
+      "versionCode": 4,
       "package": "com.mylos97.LifeBuddy"
     },
     "web": {
