@@ -295,7 +295,8 @@ const Player = (props) => {
             </Modal>
             <View style={{ flex:1, flexDirection:'column', alignItems:'center' , justifyContent:'center', transform: [{rotate: rotate ? rotate : "0deg"}]}}>
                 <View style={{flexDirection:'row'}}>
-                <TouchableOpacity 
+                <TouchableOpacity
+                hitSlop={{left:60,right:20,top:20,bottom:20}} 
                 onPress={() => {
                     setLife(life => life - 1)
                     setTempLife(life => life - 1)
@@ -336,7 +337,8 @@ const Player = (props) => {
                 />
                 </View>
                 </TouchableWithoutFeedback>
-                <TouchableOpacity 
+                <TouchableOpacity
+                hitSlop={{left:20,right:60,top:20,bottom:20}} 
                 onPress={() => {
                     setLife(life => life + 1)
                     setTempLife(life => life + 1)
