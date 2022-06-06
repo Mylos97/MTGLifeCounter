@@ -119,7 +119,14 @@ const Player = (props) => {
                 if (!longPressNegative) {
                     clearInterval(interval)
                 }
-                if(longPressNegative) setLife(life => life - 1)
+                if(longPressNegative) {
+                    setLife(life => life - 1)
+                    setTempLife(life => life - 1)
+                    setTimerActive(true)
+                    if (isActive < 20) {
+                        setIsActive(30)
+                    }
+                }
                 }, tick)
             return () => {
                 clearInterval(interval)
@@ -133,8 +140,15 @@ const Player = (props) => {
             let interval = setInterval(() => {
                 if (!longPressPositive) {
                     clearInterval(interval)
+                } 
+                if(longPressPositive) {
+                    setLife(life => life + 1)
+                    setTempLife(life => life + 1)
+                    setTimerActive(true)
+                    if (isActive < 20) {
+                        setIsActive(30)
+                    }
                 }
-                if(longPressPositive) setLife(life => life + 1)
                 }, tick)
             return () => {
                 clearInterval(interval)
@@ -307,6 +321,8 @@ const Player = (props) => {
                 }} 
                 style={{ justifyContent:'center', alignItems:'center'}}
                 onLongPress={() => {
+                    setIsActive(30)
+                    setTimerActive(true)                    
                     setLongPressNegative(true)}}
                 onPressOut={() =>{ 
                     setLongPressNegative(false)}}
@@ -348,7 +364,10 @@ const Player = (props) => {
                     }
                 }} 
                 style={{  justifyContent:'center',  alignItems:'center'}}
-                onLongPress={() => setLongPressPositive(true)}
+                onLongPress={() => {
+                setIsActive(30)
+                setTimerActive(true)
+                setLongPressPositive(true)}}
                 onPressOut={() => setLongPressPositive(false)}
                 >
                     <MyText 
